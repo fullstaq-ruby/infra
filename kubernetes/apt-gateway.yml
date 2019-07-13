@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: apt-gateway
+data:
+  default.conf: |
+    server {
+      listen 80;
+      server_name localhost;
+
+      location / {
+        rewrite ^/(.*)$ https://dl.bintray.com/fullstaq/fullstaq-ruby-apt/$1 redirect;
+      }
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apt-gateway
+  labels:
+    app: apt-gateway
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: apt-gateway
+  template:
+    metadata:
+      labels:
+        app: apt-gateway
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - apt-gateway
+      containers:
+        - name: nginx
+          image: nginx:1.17-alpine
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: config
+              mountPath: /etc/nginx/conf.d
+      volumes:
+        - name: config
+          configMap:
+            name: apt-gateway
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: apt-gateway
+spec:
+  selector:
+    app: apt-gateway
+  ports:
+    - protocol: TCP
+      port: 80
