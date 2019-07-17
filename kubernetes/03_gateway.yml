@@ -94,22 +94,20 @@ spec:
       port: 8002
       nodePort: 30702
 ---
-apiVersion: extensions/v1beta1
-kind: Ingress
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
 metadata:
   name: gateway
   namespace: fullstaq-ruby
 spec:
-  rules:
-    - host: apt.fullstaqruby.org
-      http:
-        paths:
-          - backend:
-              serviceName: gateway
-              servicePort: 8001
-    - host: yum.fullstaqruby.org
-      http:
-        paths:
-          - backend:
-              serviceName: gateway
-              servicePort: 8002
+  podSelector:
+    matchLabels:
+      app: gateway
+  policyTypes:
+    - Ingress
+  ingress:
+    - ports:
+        - protocol: TCP
+          port: 8001
+        - protocol: TCP
+          port: 8002

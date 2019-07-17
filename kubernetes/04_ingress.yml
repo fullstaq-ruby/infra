@@ -1,0 +1,42 @@
+apiVersion: networking.gke.io/v1beta1
+kind: ManagedCertificate
+metadata:
+  name: apt-gateway
+  namespace: fullstaq-ruby
+spec:
+  domains:
+    - apt.fullstaqruby.org
+apiVersion: networking.gke.io/v1beta1
+kind: ManagedCertificate
+metadata:
+  name: yum-gateway
+  namespace: fullstaq-ruby
+spec:
+  domains:
+    - yum.fullstaqruby.org
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: apt-gateway
+  namespace: fullstaq-ruby
+  annotations:
+    networking.gke.io/managed-certificates: apt-gateway
+    kubernetes.io/ingress.global-static-ip-name: fullstaq-ruby-packages-apt-gateway
+spec:
+  backend:
+    serviceName: gateway
+    servicePort: 8001
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: yum-gateway
+  namespace: fullstaq-ruby
+  annotations:
+    networking.gke.io/managed-certificates: yum-gateway
+    kubernetes.io/ingress.global-static-ip-name: fullstaq-ruby-packages-yum-gateway
+spec:
+  backend:
+    serviceName: gateway
+    servicePort: 8002
