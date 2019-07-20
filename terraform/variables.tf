@@ -1,1 +1,3 @@
-variable "gcloud_project" {}
+variable "gcloud_project" {
+  default = "fullstaq-ruby"
+}

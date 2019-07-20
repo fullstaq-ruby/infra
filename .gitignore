@@ -1,4 +1,5 @@
 .DS_Store
 .terraform
 *.auto.tfvars
+*.tfstate
 /terraform/backend.tf
