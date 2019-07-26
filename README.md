@@ -12,7 +12,7 @@ Next, make sure the Google Cloud CLI is properly logged in (both using normal au
 gcloud auth application-default login
 gcloud auth login
 gcloud config set project fullstaq-ruby
-../enable_gcloud_apis
+../enable_gcloud_apis.sh
 ~~~
 
 Next, create `terraform/backend.tf` using the example file. Then initialize Terraform:
