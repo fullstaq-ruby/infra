@@ -53,6 +53,7 @@ resource "google_container_node_pool" "default" {
     machine_type = "g1-small"
     disk_size_gb = 20
     disk_type = "pd-standard"
+    service_account = "${google_service_account.kubernetes.email}"
 
     metadata = {
       disable-legacy-endpoints = "true"
@@ -81,6 +82,7 @@ resource "google_container_node_pool" "preemptible" {
     machine_type = "g1-small"
     disk_size_gb = 20
     disk_type = "pd-standard"
+    service_account = "${google_service_account.kubernetes.email}"
     preemptible = true
 
     metadata = {
