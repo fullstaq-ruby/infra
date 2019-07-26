@@ -5,7 +5,8 @@ resources:
   - namespace.yml
   - deny-metadata-access.yml
   - gateway-nginx-config.yml
-  - gateway-deployment.yml
+  - gateway-deployment-primary.yml
+  - gateway-deployment-secondary.yml
   - gateway-service.yml
   - gateway-network-policy.yml
   - gateway-ingress.yml
