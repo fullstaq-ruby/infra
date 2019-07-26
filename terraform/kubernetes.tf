@@ -29,6 +29,10 @@ resource "google_container_cluster" "default" {
     provider = "CALICO"
   }
 
+  pod_security_policy_config {
+    enabled = true
+  }
+
   addons_config {
     network_policy_config {
       disabled = false
