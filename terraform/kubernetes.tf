@@ -47,7 +47,6 @@ resource "google_container_cluster" "default" {
 }
 
 resource "google_container_node_pool" "default" {
-  provider = "google-beta"
   name = "fullstaq-ruby-default-node-pool"
   location = "${google_container_cluster.default.location}"
   cluster = "${google_container_cluster.default.name}"
@@ -76,7 +75,6 @@ resource "google_container_node_pool" "default" {
 }
 
 resource "google_container_node_pool" "preemptible" {
-  provider = "google-beta"
   name = "fullstaq-ruby-preemptible-node-pool"
   location = "${google_container_cluster.default.location}"
   cluster = "${google_container_cluster.default.name}"
