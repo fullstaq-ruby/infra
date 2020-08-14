@@ -44,6 +44,10 @@ resource "google_container_cluster" "default" {
       start_time = "01:00"
     }
   }
+
+  release_channel {
+    channel = "STABLE"
+  }
 }
 
 resource "google_container_node_pool" "default" {
