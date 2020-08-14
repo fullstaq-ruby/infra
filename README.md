@@ -6,6 +6,7 @@ This repository, and all infrastructure components, are managed and maintained b
 
 ## Documentation
 
+ * [Infrastructure overview](docs/infrastructure-overview.md)
  * [Deployment guide](docs/deploy.md)
  * [Roles](docs/roles.md)
  * [Members](docs/members.md)
