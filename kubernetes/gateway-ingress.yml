@@ -1,4 +1,4 @@
-apiVersion: networking.gke.io/v1beta1
+apiVersion: networking.gke.io/v1beta2
 kind: ManagedCertificate
 metadata:
   name: apt-gateway
@@ -6,7 +6,7 @@ spec:
   domains:
     - apt.fullstaqruby.org
 ---
-apiVersion: networking.gke.io/v1beta1
+apiVersion: networking.gke.io/v1beta2
 kind: ManagedCertificate
 metadata:
   name: yum-gateway
@@ -15,7 +15,7 @@ spec:
   domains:
     - yum.fullstaqruby.org
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: apt-gateway
@@ -27,7 +27,7 @@ spec:
     serviceName: gateway
     servicePort: 8001
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: yum-gateway
