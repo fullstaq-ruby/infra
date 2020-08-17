@@ -12,3 +12,4 @@ See also the [pull request template](pull_request_template.md).
 
 ## Communication
 
+We communicate publicly as much as possible. All such public communication happens through [our issue tracker](https://github.com/fullstaq-labs/fullstaq-ruby-infra/issues), so be sure to subscribe for notifications.
