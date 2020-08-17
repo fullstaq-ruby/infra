@@ -12,11 +12,13 @@ Concepts & tasks:
  * [Deployment guide](docs/deploy.md)
  * [Editing diagrams](docs/editing-diagrams.md)
 
-Organizational:
+Organizational (for team members):
 
  * [Way of working](docs/way-of-working.md)
+ * [Responsibilities & expectations](docs/responsibilities-expectations.md)
  * [Roles](docs/roles.md)
  * [Members](docs/members.md)
+ * [Mentoring](docs/mentoring.md)
  * [Onboarding](docs/onboarding.md)
  * [Offboarding](docs/offboarding.md)
 
