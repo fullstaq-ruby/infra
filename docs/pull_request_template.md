@@ -29,7 +29,7 @@ Check a box by filling in 'x', like so...
 
  - [ ] Documentation updated
  - [ ] Infrastructure overview diagram updated
-   <!-- see CONTRIBUTING.md to learn how to edit the diagram -->
+   <!-- see docs/editing-diagrams.md to learn how to edit the diagram -->
 
 ## Definition of done (for team members)
 

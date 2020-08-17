@@ -12,13 +12,6 @@ Anything that helps improving the infrastructure, whether directly (through a pu
  * Proposing an improvement.
  * Sending a pull request.
 
-## Editing the infrastructure overview diagram
 
-The infrastructure overview diagram's source is docs/`infrastructure-overview.drawio`. It's made using [Diagrams.net](https://diagrams.net).
 
-If you modify it, be sure to export it as SVG, using the following settings:
 
- * Zoom: 110%
- * Border width: 12
- * Check: Transparent Background
- * Uncheck: Include a copy of my diagram

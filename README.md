@@ -10,6 +10,7 @@ Concepts & tasks:
 
  * [Infrastructure overview](docs/infrastructure-overview.md)
  * [Deployment guide](docs/deploy.md)
+ * [Editing diagrams](docs/editing-diagrams.md)
 
 Organizational:
 
