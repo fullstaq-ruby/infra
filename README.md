@@ -16,6 +16,8 @@ Organizational:
  * [Way of working](docs/way-of-working.md)
  * [Roles](docs/roles.md)
  * [Members](docs/members.md)
+ * [Onboarding](docs/onboarding.md)
+ * [Offboarding](docs/offboarding.md)
 
 ## Contributing
 
