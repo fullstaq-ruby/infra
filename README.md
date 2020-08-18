@@ -24,7 +24,7 @@ Organizational (for team members):
  * [Responsibilities & expectations](docs/responsibilities-expectations.md)
  * [Roles](docs/roles.md)
  * [Members](docs/members.md)
- * [Mentoring](docs/mentoring.md)
+ * [Mentorship](docs/mentorship.md)
  * [Onboarding](docs/onboarding.md)
  * [Offboarding](docs/offboarding.md)
 
