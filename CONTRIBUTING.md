@@ -42,6 +42,6 @@ Because joining the team means gaining access to protected resources, trust is e
  * Having an established relationship with either the Fullstaq Ruby project, or the wider Ruby community. The longer the better.
  * A contractual relationship (such as employment) with [Fullstaq B.V.](https://fullstaq.com/). Contractual relationships carry legal weight and provide greater likelihood of a stable trust relationship; at a minimum they establish strong legal accountability.
 
-## Apply
+### Apply
 
 If you wish to join, please [apply by submitting an issue](https://github.com/fullstaq-labs/fullstaq-ruby-infra/issues/new?template=apply_join_team.md).
