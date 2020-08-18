@@ -2,4 +2,3 @@
 .terraform
 *.auto.tfvars
 *.tfstate
-/terraform/backend.tf

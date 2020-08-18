@@ -19,11 +19,11 @@ gcloud config set project fullstaq-ruby
 ../enable_gcloud_apis.sh
 ~~~
 
-Next, create `terraform/backend.tf` using the example file. Then initialize Terraform:
+Next, initialize Terraform:
 
 ~~~bash
 cd terraform
-terraform init -backend-config=backend.tf
+terraform init
 ~~~
 
 Finally, create the infrastructure:
