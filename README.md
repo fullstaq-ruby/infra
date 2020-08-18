@@ -6,9 +6,15 @@ This repository, and all infrastructure components, are managed and maintained b
 
 ## Documentation
 
-Concepts & tasks:
+Concepts:
 
  * [Infrastructure overview](docs/infrastructure-overview.md)
+ * [Infrastructure as code](docs/infrastructure-as-code.md)
+ * [Infrastructure bootstrapping](docs/infrastructure-bootstrapping.md)
+ * [Required development tools](docs/required-devtools.md)
+
+Tasks:
+
  * [Deployment guide](docs/deploy.md)
  * [Editing diagrams](docs/editing-diagrams.md)
 

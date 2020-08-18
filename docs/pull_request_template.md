@@ -31,8 +31,13 @@ Check a box by filling in 'x', like so...
  - [ ] Infrastructure overview diagram updated
    <!-- see docs/editing-diagrams.md to learn how to edit the diagram -->
 
+## Checklist for reviewers
+
+- [ ] If `terraform-hisec/` was updated: someone with the "Infra Owner" role has checked the output of `terraform plan`
+
 ## Definition of done (for team members)
 
-This checklist is for the person who merges this pull request.
+This checklist is for the person who merges this pull request. _Tick check boxes, or strike out irrelevant ones._
 
+ - [ ] If `terraform-hisec/` was updated: someone with the "Infra Owner" role has run `terraform apply`
  - [ ] Tested in production

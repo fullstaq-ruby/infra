@@ -5,6 +5,7 @@ Joining the team means assuming one or more of the following responsibilities:
  * Investigating and fixing urgent issues and down time.
  * Ensuring that infrastructure components stay healthy and secure.
  * Ensuring that the content in the issue tracker stays up-to-date, relevant and high-quality.
+ * Reviewing pull requests.
  * Ensuring that community interactions follow our [Code of Conduct](../CODE_OF_CONDUCT.md).
  * Providing [mentorship](mentorship.md) to contributors and fellow team members.
 

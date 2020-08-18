@@ -21,6 +21,10 @@ Have a look at our [issue tracker](https://github.com/fullstaq-labs/fullstaq-rub
  * "good first issue" if you're looking for something easy.
  * "help wanted" if you're in for a challenge, or if you want to help with a high-impact issue.
 
+## Required development tools
+
+See [Required development tools](docs/required-devtools.md) to learn what tools you need in order to contribute.
+
 ## Mentorship
 
 Want to contribute, but feel that you may need some help? We provide [mentorship](docs/mentorship.md) for contributors.

@@ -83,3 +83,9 @@ The Bintray account also stores a copy of the GPG private key, which is used to 
  * Administered by role: Infra Owners
 
 The GPG private key is used to sign APT and YUM repositories. We store the canonical copy in Secrets Manager in the `fullstaq-ruby-hisec` Google Cloud project. We also store a secondary copy in Bintray, to allow it to sign repositories.
+
+## Google Cloud service account for CI/CD
+
+ * Administered by role: Infra Maintainers
+
+The `fullstaq-ruby` Google Cloud project has a service account, which has full access to the container registry. It's used by the Server Edition's CI/CD system.
