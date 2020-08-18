@@ -2,7 +2,7 @@
 
 ## Development process
 
- * Never push to master directly, except for documentation updates.
+ * Never push to the `main` branch directly, except for documentation updates.
 
  * Propose all changes to the infrastructure through pull requests.
 
