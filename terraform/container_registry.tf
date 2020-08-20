@@ -1,4 +1,5 @@
 resource "google_container_registry" "registry" {
+  depends_on = [google_project_service.containerregistry-api]
 }
 
 resource "google_storage_bucket_iam_binding" "public-viewable" {
