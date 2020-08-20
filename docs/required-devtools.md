@@ -6,3 +6,4 @@ You need these tools:
  * [Terraform](https://terraform.io)
  * [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
  * [jq](https://stedolan.github.io/jq/)
+ * Your editor should be configured to respect [EditorConfig](https://editorconfig.org/).
