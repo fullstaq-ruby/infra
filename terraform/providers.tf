@@ -1,9 +1,23 @@
+terraform {
+  required_providers {
+    google = {
+      source = "hashicorp/google"
+      version = "~> 3.16.0"
+    }
+
+    google-beta = {
+      source = "hashicorp/google-beta"
+      version = "~> 3.16.0"
+    }
+  }
+
+  required_version = ">= 0.13"
+}
+
 provider "google" {
-  version = "~> 3.16.0"
   project = var.gcloud_project
 }
 
 provider "google-beta" {
-  version = "~> 3.16.0"
   project = var.gcloud_project
 }
