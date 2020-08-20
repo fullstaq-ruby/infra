@@ -34,10 +34,16 @@ jobs:
       - name: Validate terraform/
         run: terraform validate
         working-directory: terraform
+      - name: Check formatting of terraform/
+        run: terraform fmt -check -diff -recursive
+        working-directory: terraform
 
       - name: Initialize terraform-hisec/
         run: terraform init -backend=false
         working-directory: terraform-hisec
       - name: Validate terraform-hisec/
         run: terraform validate
+        working-directory: terraform-hisec
+      - name: Check formatting of terraform-hisec/
+        run: terraform fmt -check -diff -recursive
         working-directory: terraform-hisec

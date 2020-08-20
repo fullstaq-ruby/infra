@@ -1,4 +1,4 @@
 variable "gcloud_project" {
-  type = string
+  type    = string
   default = "fullstaq-ruby-hisec"
 }
