@@ -1,0 +1,43 @@
+# This workflow must be usable with third-party pull requests,
+# and thus may not make use of any secrets.
+
+name: Code reviews
+
+on:
+  workflow_dispatch: {}
+  push:
+    paths-ignore:
+      - '*.md'
+      - '**/*.md'
+  pull_request:
+    paths-ignore:
+      - '*.md'
+      - '**/*.md'
+
+jobs:
+  check:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12'
+
+      - name: Install eclint
+        run: npm install -g eclint
+      - name: Check EditorConfig compliance
+        run: eclint check $(git ls-files)
+
+      - name: Initialize terraform/
+        run: terraform init -backend=false
+        working-directory: terraform
+      - name: Validate terraform/
+        run: terraform validate
+        working-directory: terraform
+
+      - name: Initialize terraform-hisec/
+        run: terraform init -backend=false
+        working-directory: terraform-hisec
+      - name: Validate terraform-hisec/
+        run: terraform validate
+        working-directory: terraform-hisec
