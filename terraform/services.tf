@@ -1,35 +1,35 @@
 resource "google_project_service" "compute-api" {
   project = var.gcloud_project
-  service = compute.googleapis.com
-  disable_dependent_services = false
+  service = "compute.googleapis.com"
 }
 
 resource "google_project_service" "container-api" {
   project = var.gcloud_project
-  service = container.googleapis.com
-  disable_dependent_services = false
+  service = "container.googleapis.com"
 }
 
 resource "google_project_service" "containerregistry-api" {
   project = var.gcloud_project
-  service = containerregistry.googleapis.com
-  disable_dependent_services = false
+  service = "containerregistry.googleapis.com"
 }
 
 resource "google_project_service" "dns-api" {
   project = var.gcloud_project
-  service = dns.googleapis.com
-  disable_dependent_services = false
+  service = "dns.googleapis.com"
 }
 
 resource "google_project_service" "servicenetworking-api" {
   project = var.gcloud_project
-  service = servicenetworking.googleapis.com
-  disable_dependent_services = false
+  service = "servicenetworking.googleapis.com"
 }
 
 resource "google_project_service" "storage-component-api" {
   project = var.gcloud_project
-  service = storage-component.googleapis.com
-  disable_dependent_services = false
+  service = "storage-component.googleapis.com"
 }
+
+resource "google_project_service" "iam-api" {
+  project = var.gcloud_project
+  service = "iam.googleapis.com"
+}
+
