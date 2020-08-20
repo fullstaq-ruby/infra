@@ -5,19 +5,16 @@ resource "google_service_account" "kubernetes" {
 }
 
 resource "google_project_iam_member" "kubernetes-logwriter" {
-  depends_on = [google_project_service.iam-api]
   role = "roles/logging.logWriter"
   member = "serviceAccount:${google_service_account.kubernetes.email}"
 }
 
 resource "google_project_iam_member" "kubernetes-metricwriter" {
-  depends_on = [google_project_service.iam-api]
   role = "roles/monitoring.metricWriter"
   member = "serviceAccount:${google_service_account.kubernetes.email}"
 }
 
 resource "google_project_iam_member" "kubernetes-monitoring-viewer" {
-  depends_on = [google_project_service.iam-api]
   role = "roles/monitoring.viewer"
   member = "serviceAccount:${google_service_account.kubernetes.email}"
 }
