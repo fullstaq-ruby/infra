@@ -10,13 +10,12 @@ You need Terraform, kubectl and the Google Cloud CLI.
 
 Create the `fullstaq-ruby` project in Google Cloud. And within that project, create a Google Cloud Storage bucket for storing the Terraform state.
 
-Next, make sure the Google Cloud CLI is properly logged in (both using normal auth and application default auth), set to the right project, and enable the required Google Cloud APIs:
+Next, make sure the Google Cloud CLI is properly logged in (both using normal auth and application default auth) and set to the right project:
 
 ~~~bash
 gcloud auth application-default login
 gcloud auth login
 gcloud config set project fullstaq-ruby
-../enable_gcloud_apis.sh
 ~~~
 
 Next, initialize Terraform:

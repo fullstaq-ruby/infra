@@ -1,4 +1,5 @@
 resource "google_service_account" "kubernetes" {
+  depends_on = [google_project_service.iam-api]
   account_id = "kubernetes"
   display_name = "Kubernetes"
 }
@@ -20,6 +21,7 @@ resource "google_project_iam_member" "kubernetes-monitoring-viewer" {
 
 
 resource "google_service_account" "github-actions" {
+  depends_on = [google_project_service.iam-api]
   account_id = "github-actions"
   display_name = "Github Actions"
 }
