@@ -1,5 +1,5 @@
 resource "google_container_cluster" "default" {
-  provider = "google-beta"
+  provider = google-beta
   name = "fullstaq-ruby"
   location = "us-east1-c"
   logging_service = "logging.googleapis.com/kubernetes"
@@ -52,15 +52,15 @@ resource "google_container_cluster" "default" {
 
 resource "google_container_node_pool" "default" {
   name = "fullstaq-ruby-default-node-pool"
-  location = "${google_container_cluster.default.location}"
-  cluster = "${google_container_cluster.default.name}"
+  location = google_container_cluster.default.location
+  cluster = google_container_cluster.default.name
   node_count = 1
 
   node_config {
     machine_type = "g1-small"
     disk_size_gb = 20
     disk_type = "pd-standard"
-    service_account = "${google_service_account.kubernetes.email}"
+    service_account = google_service_account.kubernetes.email
 
     metadata = {
       disable-legacy-endpoints = "true"
@@ -80,15 +80,15 @@ resource "google_container_node_pool" "default" {
 
 resource "google_container_node_pool" "preemptible" {
   name = "fullstaq-ruby-preemptible-node-pool"
-  location = "${google_container_cluster.default.location}"
-  cluster = "${google_container_cluster.default.name}"
+  location = google_container_cluster.default.location
+  cluster = google_container_cluster.default.name
   node_count = 1
 
   node_config {
     machine_type = "g1-small"
     disk_size_gb = 20
     disk_type = "pd-standard"
-    service_account = "${google_service_account.kubernetes.email}"
+    service_account = google_service_account.kubernetes.email
     preemptible = true
 
     metadata = {
