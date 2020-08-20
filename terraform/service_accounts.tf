@@ -30,6 +30,5 @@ resource "google_service_account" "github-actions" {
 }
 
 resource "google_service_account_key" "github-actions-sa-key" {
-  depends_on = [google_project_service.iam-api]
-  service_account_id = "${google_service_account.github-actions.name}"
+  service_account_id = google_service_account.github-actions.name
 }
