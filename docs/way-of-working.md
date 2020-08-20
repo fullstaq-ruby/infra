@@ -2,11 +2,13 @@
 
 ## Development process
 
- * Never push to the `main` branch directly, except for documentation updates.
+ * Never push to the `main` branch directly, except for trivial documentation updates.
 
- * Propose all changes to the infrastructure through pull requests.
+   - Instead, propose most changes through pull requests.
 
  * The person who merges a pull request is responsible for testing it after merge, and for providing feedback to the submitter if something is wrong.
+
+ * Write [joyous commit messages](https://medium.com/@joshuatauberer/write-joyous-git-commit-messages-2f98891114c4).
 
 See also the [pull request template](pull_request_template.md).
 
