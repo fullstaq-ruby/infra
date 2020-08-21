@@ -30,6 +30,8 @@ Check a box by filling in 'x', like so...
  - [ ] Documentation updated
  - [ ] Infrastructure overview diagram updated
    <!-- see docs/editing-diagrams.md to learn how to edit the diagram -->
+ - [ ] The following content/files are kept in sync with each other:
+   + The Terraform version specified in `**/providers.tf`, `.github/workflows/code-reviews.yml` and `docs/required-devtools.md`
 
 ## Checklist for reviewers
 
