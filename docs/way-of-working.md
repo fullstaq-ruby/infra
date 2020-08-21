@@ -10,6 +10,8 @@
 
  * Write [joyous commit messages](https://medium.com/@joshuatauberer/write-joyous-git-commit-messages-2f98891114c4).
 
+ * Strive to respond to pull requests in 48h, in order to encourage contributions.
+
 See also the [pull request template](pull_request_template.md) for various checklists to be mindful of during development.
 
 ## Communication
