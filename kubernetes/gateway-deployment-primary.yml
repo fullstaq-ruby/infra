@@ -8,11 +8,12 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: gateway
+      app-part: gateway-primary
   template:
     metadata:
       labels:
         app: gateway
+        app-part: gateway-primary
     spec:
       affinity:
         nodeAffinity:
