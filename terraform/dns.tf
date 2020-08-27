@@ -1,7 +1,7 @@
 resource "google_dns_managed_zone" "fullstaqruby_org" {
   depends_on = [google_project_service.dns-api]
   name       = "fullstaqruby-org"
-  dns_name   = "fullstaqruby.org."
+  dns_name   = var.dns_name
   dnssec_config {
     state = "on"
   }
