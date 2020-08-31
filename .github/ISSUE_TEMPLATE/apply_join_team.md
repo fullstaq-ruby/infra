@@ -18,7 +18,8 @@ I'm interested in assuming the following responsibilities:
  - [ ] Investigating and fixing urgent issues and down time.
  - [ ] Ensuring that infrastructure components stay healthy and secure.
  - [ ] Ensuring that the content in the issue tracker stays up-to-date, relevant and high-quality.
- - [ ] Reviewing pull requests.
+ - [ ] Handling support requests from developers.
+ - [ ] Reviewing infrastructure pull requests.
  - [ ] Ensuring that community interactions follow our Code of Conduct.
  - [ ] Providing mentorship to contributors and fellow team members.
 

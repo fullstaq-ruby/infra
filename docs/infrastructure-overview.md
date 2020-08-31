@@ -25,6 +25,12 @@ The Terraform state for normal infrastructure is stored in a Google Cloud Storag
 
 The Terraform state for sensitive infrastructure is stored in a Google Cloud Storage bucket, inside the `fullstaq-ruby-hisec` project.
 
+## Server Edition CI artifacts store
+
+ * Administered by role: Infra Maintainers
+
+The Server Edition's CI/CD system stores artifacts in this bucket, for the purpose of implementing [resumption](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/blob/main/dev-handbook/ci-cd-resumption.md). Objects in this bucket only live for 14 days.
+
 ## Container registry
 
  * Administered by role: Infra Maintainers

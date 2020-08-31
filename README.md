@@ -28,6 +28,10 @@ Organizational (for team members):
  * [Onboarding](docs/onboarding.md)
  * [Offboarding](docs/offboarding.md)
 
+Handling of support requests (by team members):
+
+ * [Clearing CI artifacts](docs/clearing-ci-artifacts.md)
+
 ## Contributing
 
 We welcome all contributions, no matter who you are, and no matter whether it's big or small! 😀 Our definition of "contribute" is quite broad, so it's more likely than not that you can help us with _something_. Please learn more in the [contribution guide](CONTRIBUTING.md).

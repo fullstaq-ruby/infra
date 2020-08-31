@@ -23,6 +23,11 @@ resource "google_project_service" "servicenetworking-api" {
   service = "servicenetworking.googleapis.com"
 }
 
+resource "google_project_service" "storage-api" {
+  project = var.gcloud_project
+  service = "storage.googleapis.com"
+}
+
 resource "google_project_service" "storage-component-api" {
   project = var.gcloud_project
   service = "storage-component.googleapis.com"
