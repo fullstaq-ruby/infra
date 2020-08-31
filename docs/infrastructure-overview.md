@@ -13,11 +13,17 @@ All Google Cloud resources are contained in two projects:
  - `fullstaq-ruby` for normal resources. Infra Maintainers have full access to all resources _inside_ this project.
  - `fullstaq-ruby-hisec` for especially sensitive resources. Only Infra Owners have access to the resources inside this project.
 
-## Terraform state
+## Terraform state (normal)
 
  * Administered by role: Infra Maintainers
 
-The Terraform state is stored in a Google Cloud Storage bucket, inside the `fullstaq-ruby` project.
+The Terraform state for normal infrastructure is stored in a Google Cloud Storage bucket, inside the `fullstaq-ruby` project.
+
+## Terraform state (hisec)
+
+ * Administered by role: Infra Owners
+
+The Terraform state for sensitive infrastructure is stored in a Google Cloud Storage bucket, inside the `fullstaq-ruby-hisec` project.
 
 ## Container registry
 
@@ -74,7 +80,7 @@ The account itself is administered by the Infra Owners role, but the repositorie
 
 Note that the Infrastructure team does not maintain the packages _inside_ the repositories; that's left to package maintainers.
 
-Package maintainers' CI/CD systems make use of Fabian Met's access key, in order to access repositories.
+Package maintainers' CI/CD systems make use of Fabian Met's API key, in order to access repositories. A copy of this key is stored in the `fullstaq-ruby-hisec` Google Cloud project's Secret Manager.
 
 The Bintray account also stores a copy of the GPG private key, which is used to sign the repositories. This key cannot be read back from Bintray.
 

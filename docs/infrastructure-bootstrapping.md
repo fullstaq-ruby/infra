@@ -106,16 +106,26 @@ In the repo, create a package.
 
 In the package, create a version with name 'all'.
 
-## Step 5: Install Bintray API key as a Github Actions secret
+## Step 5: Store Bintray API key in Secret Manager
 
-In Bintray, have the account owner create an API key.
+ 1. In Bintray, have the account owner create an API key.
+ 2. Go to the `fullstaq-ruby-hisec` Google Cloud project.
+ 3. Go to Security ➜ Secret Manager.
+ 4. Create two secrets:
+
+     - `bintray-api-username`: the API key owner's Bintray username.
+     - `bintray-api-key`: the API key.
+
+## Step 6: Install Bintray API key as a Github Actions secret
+
+In Bintray, have the account owner create an API key, if not already done.
 
 In the [fullstaq-ruby-server-edition](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/settings/secrets) repo, create the following Github Actions secrets:
 
  * `BINTRAY_API_USERNAME`: the Bintray account owner's username.
  * `BINTRAY_API_KEY`: the created API key.
 
-## Step 6: Create Terraform state buckets
+## Step 7: Create Terraform state buckets
 
 In the `fullstaq-ruby` Google Cloud project, create a Cloud Storage bucket with the following parameters:
 
@@ -141,7 +151,7 @@ In the `fullstaq-ruby-hisec` Google Cloud project, create a Cloud Storage bucket
  * No retention policy
  * No labels
 
-## Step 7: Run Terraform (hisec)
+## Step 8: Run Terraform (hisec)
 
 Setup the Google Cloud CLI's application default credentials if you haven't yet:
 
@@ -157,7 +167,7 @@ terraform init
 terraform apply
 ~~~
 
-## Step 8: Run Terraform (normal)
+## Step 9: Run Terraform (normal)
 
 Setup the Google Cloud CLI's application default credentials if you haven't yet:
 
@@ -173,13 +183,13 @@ terraform init
 terraform apply
 ~~~
 
-## Step 9: Register domain
+## Step 10: Register domain
 
 In [TransIP](https://www.transip.nl/), register the domain `fullstaqruby.org`.
 
 Configure it to use the Google Cloud DNS zone in the `fullstaq-ruby` project. For instruction on how to do this, go to the Google Cloud DNS zone's configuration panel, and view the "Registrar setup" instructions.
 
-## Step 10: Install service account private key as a Github Actions secret
+## Step 11: Install service account private key as a Github Actions secret
 
 Terraform has created a service account that developers' CI/CD systems can use to publish artifacts to the `fullstaq-ruby` Google Cloud project. We copy this service account's private key into a Github Actions secret.
 
@@ -192,6 +202,6 @@ terraform show -json | jq -r '.values.root_module.resources[] | select(.name == 
 
 In the [fullstaq-ruby-server-edition](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/settings/secrets) repo, paste this value into a secret named `GCLOUD_KEY`.
 
-## Step 11: Onboard everybody
+## Step 12: Onboard everybody
 
 Onboard everybody in the [members list](members.md) according to the [onboarding instructions](onboarding.md).
