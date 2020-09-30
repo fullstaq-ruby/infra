@@ -78,8 +78,6 @@ In the repo, create a package.
  * Version control: https://github.com/fullstaq-labs/fullstaq-ruby-server-edition
  * Make download numbers in stats public
 
-In the package, create a version with name 'all'.
-
 ### fullstaq-ruby-yum
 
 Create a repo with this name.
@@ -103,8 +101,6 @@ In the repo, create a package.
  * Issue tracker: https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/issues
  * Version control: https://github.com/fullstaq-labs/fullstaq-ruby-server-edition
  * Make download numbers in stats public
-
-In the package, create a version with name 'all'.
 
 ## Step 5: Store Bintray API key in Secret Manager
 
