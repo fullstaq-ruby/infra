@@ -198,6 +198,71 @@ terraform show -json | jq -r '.values.root_module.resources[] | select(.name == 
 
 In the [fullstaq-ruby-server-edition](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/settings/secrets) repo, paste this value into a secret named `GCLOUD_KEY`.
 
-## Step 12: Onboard everybody
+## Step 12: Register a Github bot account
+
+### Create an email inbox for the Github bot account
+
+In the Fullstaq G Suite admin console, create a new group:
+
+ * Name: Fullstaq Ruby CI bot
+ * Email: fullstaq-ruby-ci-bot@fullstaq.com
+
+Go to its [Advanced Settings](https://groups.google.com/a/fullstaq.com/g/fullstaq-ruby-ci-bot/settings) and ensure the following settings:
+
+ * General:
+    - Who can see this group: Organisation members
+    - Who can join this group: Invited users only
+    - Who can view conversations: Group managers
+    - Who can post: Anyone on the web
+    - Who can view members: Group managers
+ * Member privacy:
+    - Identification required for new members: Display profile name only
+    - Who can view the member's email addresses: Group managers
+ * Posting policies:
+    - Conversation history: on
+    - Who can moderate content: Group managers
+    - Who can moderate metadata: Group managers
+    - Who can post as the group: Group owners
+    - Message moderation: No moderation
+    - New member restrictions: No posting restriction for new members
+ * Member moderation
+    - Who can manage members: Group managers
+    - Permission to modify custom roles: Group owners
+
+### Register the Github bot account
+
+Account details:
+
+ * Username: fullstaq-ruby-ci-bot
+ * Email: fullstaq-ruby-ci-bot@fullstaq.com
+
+Store the password in Secret Manager:
+
+ 1. Go to the `fullstaq-ruby-hisec` Google Cloud project.
+ 2. Go to Security ➜ Secret Manager.
+ 3. Create a secret with the name `fullstaq-ruby-ci-bot-password` and insert the password.
+
+### Personal access token
+
+Create a personal access token:
+
+ * Note: Server Edition CI
+ * Scope: repo
+
+Store this token in Secret Manager:
+
+ 1. Go to the `fullstaq-ruby-hisec` Google Cloud project.
+ 2. Go to Security ➜ Secret Manager.
+ 3. Create a secret with the name `fullstaq-ruby-ci-bot-server-edition-ci-pat` and insert the personal access token.
+
+### Install Github Actions secret
+
+In the [fullstaq-ruby-server-edition](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/settings/secrets) repo, create a Github Actions secret named `WORKFLOW_DISPATCH_TOKEN`. Set it to the personal access token.
+
+### Grant access to key repositories
+
+In the [fullstaq-ruby-server-edition](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/settings/access) repo, add fullstaq-ruby-ci-bot as a collaborator. Grant the "Write" access.
+
+## Step 13: Onboard everybody
 
 Onboard everybody in the [members list](members.md) according to the [onboarding instructions](onboarding.md).

@@ -101,3 +101,9 @@ The GPG private key is used to sign APT and YUM repositories. We store the canon
  * Administered by role: Infra Maintainers
 
 The `fullstaq-ruby` Google Cloud project has a service account, which has full access to the container registry. It's used by the Server Edition's CI/CD system.
+
+## Github CI bot account
+
+ * Administered by role: Infra Owners
+
+This Github bot account is used by the Server Edition's CI/CD system. The account itself (and its email address) is administered by Infra Owners. It has a personal access token, which is installed as a secret in the Server Edition's repo, so that its CI/CD system can perform work under the bot account.
