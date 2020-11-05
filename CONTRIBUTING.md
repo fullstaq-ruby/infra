@@ -13,6 +13,7 @@ Anything that helps improving the infrastructure, whether directly (through a pu
  * Updating documentation.
  * Proposing an improvement.
  * Sending a pull request.
+ * Reviewing someone else's pull request.
 
 ## Not sure how to get started?
 
