@@ -193,7 +193,7 @@ First, fetch the private key (which is in JSON format, base64-encoded) from the 
 
 ~~~bash
 cd terraform
-terraform show -json | jq -r '.values.root_module.resources[] | select(.name == "github-actions-sa-key") | .values.private_key'
+terraform show -json | jq -r '.values.root_module.resources[] | select(.name == "server-editions-ci-bot-sa-key") | .values.private_key'
 ~~~
 
 In the [fullstaq-ruby-server-edition](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/settings/secrets) repo, paste this value into a secret named `GCLOUD_KEY`.

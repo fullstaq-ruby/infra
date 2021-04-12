@@ -30,5 +30,5 @@ resource "google_storage_bucket_iam_binding" "server-edition-ci-artifacts-public
 resource "google_storage_bucket_iam_binding" "server-edition-ci-artifacts-writable-by-ci-cd" {
   bucket  = google_storage_bucket.server-edition-ci-artifacts.self_link
   role    = "roles/storage.objectAdmin"
-  members = ["serviceAccount:${google_service_account.github-actions.email}"]
+  members = ["serviceAccount:${google_service_account.server-edition-ci-bot.email}"]
 }

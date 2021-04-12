@@ -20,12 +20,12 @@ resource "google_project_iam_member" "kubernetes-monitoring-viewer" {
 }
 
 
-resource "google_service_account" "github-actions" {
+resource "google_service_account" "server-edition-ci-bot" {
   depends_on   = [google_project_service.iam-api]
-  account_id   = "github-actions"
-  display_name = "Github Actions"
+  account_id   = "server-edition-ci-bot"
+  display_name = "Server Edition CI bot"
 }
 
-resource "google_service_account_key" "github-actions-sa-key" {
-  service_account_id = google_service_account.github-actions.name
+resource "google_service_account_key" "server-editions-ci-bot-sa-key" {
+  service_account_id = google_service_account.server-edition-ci-bot.name
 }
