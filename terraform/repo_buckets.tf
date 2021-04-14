@@ -12,6 +12,12 @@ resource "google_storage_bucket_iam_binding" "server-edition-apt-repo-public-vie
   members = ["allUsers"]
 }
 
+resource "google_storage_bucket_iam_binding" "server-edition-apt-repo-writable-by-server-edition-ci-bot" {
+  bucket  = google_storage_bucket.server-edition-apt-repo.self_link
+  role    = "roles/storage.objectAdmin"
+  members = ["serviceAccount:${google_service_account.server-edition-ci-bot.email}"]
+}
+
 
 resource "google_storage_bucket" "server-edition-yum-repo" {
   depends_on         = [google_project_service.storage-api]
@@ -25,4 +31,10 @@ resource "google_storage_bucket_iam_binding" "server-edition-yum-repo-public-vie
   bucket  = google_storage_bucket.server-edition-yum-repo.self_link
   role    = "roles/storage.objectViewer"
   members = ["allUsers"]
+}
+
+resource "google_storage_bucket_iam_binding" "server-edition-yum-repo-writable-by-server-edition-ci-bot" {
+  bucket  = google_storage_bucket.server-edition-yum-repo.self_link
+  role    = "roles/storage.objectAdmin"
+  members = ["serviceAccount:${google_service_account.server-edition-ci-bot.email}"]
 }
