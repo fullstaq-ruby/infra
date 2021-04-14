@@ -31,7 +31,7 @@ The Terraform state for sensitive infrastructure is stored in a Google Cloud Sto
 
 The Server Edition's CI/CD system stores artifacts in this bucket, for the purpose of implementing [resumption](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/blob/main/dev-handbook/ci-cd-resumption.md). Objects in this bucket only live for 14 days.
 
-## Server Edition CI APT & YUM repo buckets
+## Server Edition APT & YUM repo buckets
 
  * Administered by role: Infra Maintainers
 

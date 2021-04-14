@@ -1,4 +1,4 @@
-# Infrastructure as code
+# Infrastructure as code & directory structure
 
 We define as much infrastructure as possible in the form of code, using:
 
