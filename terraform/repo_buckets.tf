@@ -1,9 +1,9 @@
 resource "google_storage_bucket" "server-edition-apt-repo" {
-  depends_on         = [google_project_service.storage-api]
-  name               = "${var.globally_unique_resource_prefix}-server-edition-apt-repo"
-  force_destroy      = true
-  bucket_policy_only = true
-  location           = "US-EAST4"
+  depends_on                  = [google_project_service.storage-api]
+  name                        = "${var.globally_unique_resource_prefix}-server-edition-apt-repo"
+  force_destroy               = true
+  uniform_bucket_level_access = true
+  location                    = "US-EAST4"
 }
 
 resource "google_storage_bucket_iam_binding" "server-edition-apt-repo-public-viewable" {
@@ -20,11 +20,11 @@ resource "google_storage_bucket_iam_binding" "server-edition-apt-repo-writable-b
 
 
 resource "google_storage_bucket" "server-edition-yum-repo" {
-  depends_on         = [google_project_service.storage-api]
-  name               = "${var.globally_unique_resource_prefix}-server-edition-yum-repo"
-  force_destroy      = true
-  bucket_policy_only = true
-  location           = "US-EAST4"
+  depends_on                  = [google_project_service.storage-api]
+  name                        = "${var.globally_unique_resource_prefix}-server-edition-yum-repo"
+  force_destroy               = true
+  uniform_bucket_level_access = true
+  location                    = "US-EAST4"
 }
 
 resource "google_storage_bucket_iam_binding" "server-edition-yum-repo-public-viewable" {

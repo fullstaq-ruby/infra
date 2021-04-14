@@ -1,6 +1,5 @@
 resource "google_container_cluster" "default" {
   depends_on         = [google_project_service.container-api]
-  provider           = google-beta
   name               = "fullstaq-ruby"
   location           = "us-east1-c"
   logging_service    = "logging.googleapis.com/kubernetes"

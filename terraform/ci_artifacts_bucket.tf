@@ -1,8 +1,8 @@
 resource "google_storage_bucket" "server-edition-ci-artifacts" {
-  depends_on         = [google_project_service.storage-api]
-  name               = "${var.globally_unique_resource_prefix}-server-edition-ci-artifacts"
-  force_destroy      = true
-  bucket_policy_only = true
+  depends_on                  = [google_project_service.storage-api]
+  name                        = "${var.globally_unique_resource_prefix}-server-edition-ci-artifacts"
+  force_destroy               = true
+  uniform_bucket_level_access = true
 
   # All Github-hosted runners are located in the US,
   # of which two are located in Virginia. So we
