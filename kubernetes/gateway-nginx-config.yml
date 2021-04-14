@@ -12,7 +12,7 @@ data:
         if ($http_user_agent ~* "GoogleHC") {
           return 200 'OK';
         }
-        rewrite ^/(.*)$ https://dl.bintray.com/fullstaq/fullstaq-ruby-apt/$1 redirect;
+        rewrite ^/(.*)$ https://storage.googleapis.com/fullstaq-ruby-server-edition-apt-repo/versions/1/$1 redirect;
       }
     }
 
@@ -24,6 +24,6 @@ data:
         if ($http_user_agent ~* "GoogleHC") {
           return 200 'OK';
         }
-        rewrite ^/(.*)$ https://dl.bintray.com/fullstaq/fullstaq-ruby-yum/$1 redirect;
+        rewrite ^/(.*)$ https://storage.googleapis.com/fullstaq-ruby-server-edition-yum-repo/versions/1/$1 redirect;
       }
     }

@@ -31,6 +31,14 @@ The Terraform state for sensitive infrastructure is stored in a Google Cloud Sto
 
 The Server Edition's CI/CD system stores artifacts in this bucket, for the purpose of implementing [resumption](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/blob/main/dev-handbook/ci-cd-resumption.md). Objects in this bucket only live for 14 days.
 
+## Server Edition CI APT & YUM repo buckets
+
+ * Administered by role: Infra Maintainers
+
+The Server Edition's APT and YUM repositories are stored inside these buckets. These buckets are publicly readable.
+
+Users don't access these buckets directly. Instead, they access `apt.fullstaqruby.org` and `yum.fullstaqruby.org` (served by the Nginx web servers), which redirect to these buckets.
+
 ## Container registry
 
  * Administered by role: Infra Maintainers
@@ -50,12 +58,14 @@ All DNS entries for `fullstaqruby.org` are managed through Google Cloud DNS, ins
 
  * Administered by role: Infra Maintainers
 
-We run two Nginx instances. These web servers' only purpose is to redirect traffic. Users interact primarily with `{apt,yum}.fullstaqruby.org` instead of with Bintray directly. This reduces our dependency on Bintray, allowing us to move away from Bintray without breaking users' URLs, should that one day become necessary.
+We run two Nginx instances. These web servers' only purpose is to redirect traffic. Users interact primarily with `{apt,yum}.fullstaqruby.org` instead of with the APT and YUM repo buckets directly. This decouples users from our APT and YUM repos are actually hosted, allowing us to change the hosting mechanism without breaking users' URLs.
+
+> Historic note: our APT and YUM repos used to be hosted on Bintray. But Bintray shut down on March 1 2021. The HTTP redirection mechanism allowed us to move away from Bintray with minimal downtime, and without breaking users' repository URLs.
 
 Each Nginx instance is a Kubernetes Deployment with replicas=1. They are identically configured. They serve these virtual hosts:
 
- - `apt.fullstaqruby.org` — redirects everything to the Bintray APT repo.
- - `yum.fullstaqruby.org` — redirects everything to the Bintray YUM repo.
+ - `apt.fullstaqruby.org` — redirects everything to the APT repo bucket.
+ - `yum.fullstaqruby.org` — redirects everything to the YUM repo bucket.
 
 There is a primary instance and a secondary instance. The primary is scheduled on a normal node pool, while the secondary is scheduled on a preemtible node pool (and thus can go down at any time). Having two instances scheduled on different nodes allows high availability. But we honestly don't expect that much to go wrong, so the secondary's node pool is made preemptible in order to save costs.
 
