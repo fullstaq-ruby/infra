@@ -5,11 +5,12 @@ metadata:
 data:
   default.conf: |
     server {
-      listen 8001;
+      listen 80;
       server_name apt.fullstaqruby.org;
 
       location / {
         if ($http_user_agent ~* "GoogleHC") {
+          # Satisfy Google Cloud Balancer health check
           return 200 'OK';
         }
         rewrite ^/(.*)$ https://storage.googleapis.com/fullstaq-ruby-server-edition-apt-repo/versions/1/$1 redirect;
@@ -17,11 +18,12 @@ data:
     }
 
     server {
-      listen 8002;
+      listen 80;
       server_name yum.fullstaqruby.org;
 
       location / {
         if ($http_user_agent ~* "GoogleHC") {
+          # Satisfy Google Cloud Balancer health check
           return 200 'OK';
         }
         rewrite ^/(.*)$ https://storage.googleapis.com/fullstaq-ruby-server-edition-yum-repo/versions/1/$1 redirect;

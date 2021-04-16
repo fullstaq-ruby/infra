@@ -1,17 +1,15 @@
-kind: Service
 apiVersion: v1
+kind: Service
 metadata:
   name: gateway
+  annotations:
+    cloud.google.com/neg: '{"ingress": true}'
 spec:
+  type: ClusterIP
   selector:
     app: gateway
-  type: NodePort
   ports:
-    - name: apt
+    - name: http
       protocol: TCP
-      port: 8001
-      nodePort: 30701
-    - name: yum
-      protocol: TCP
-      port: 8002
-      nodePort: 30702
+      port: 80
+      targetPort: 80

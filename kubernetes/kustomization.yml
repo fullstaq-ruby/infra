@@ -3,11 +3,8 @@ kind: Kustomization
 namespace: fullstaq-ruby
 resources:
   - namespace.yml
-  - deny-metadata-access.yml
-  - pod-security-policy.yml
   - gateway-nginx-config.yml
-  - gateway-deployment-primary.yml
-  - gateway-deployment-secondary.yml
+  - gateway-deployment.yml
   - gateway-service.yml
   - gateway-network-policy.yml
   - gateway-ingress.yml

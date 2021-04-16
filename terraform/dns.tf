@@ -42,7 +42,7 @@ resource "google_dns_record_set" "apt_gateway" {
   type         = "A"
   ttl          = 86400
   managed_zone = google_dns_managed_zone.fullstaqruby_org.name
-  rrdatas      = [google_compute_global_address.apt_gateway.address]
+  rrdatas      = [google_compute_global_address.gateway.address]
 }
 
 resource "google_dns_record_set" "yum_gateway" {
@@ -50,5 +50,5 @@ resource "google_dns_record_set" "yum_gateway" {
   type         = "A"
   ttl          = 86400
   managed_zone = google_dns_managed_zone.fullstaqruby_org.name
-  rrdatas      = [google_compute_global_address.yum_gateway.address]
+  rrdatas      = [google_compute_global_address.gateway.address]
 }

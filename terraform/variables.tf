@@ -10,3 +10,7 @@ variable "globally_unique_resource_prefix" {
   default     = "fullstaq-ruby"
   description = "Prefix for naming resources that must have globally unique names, such as Cloud Storage buckets"
 }
+
+variable "kubernetes_region" {
+  default = "us-east4"
+}
