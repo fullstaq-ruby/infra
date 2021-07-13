@@ -38,3 +38,12 @@ resource "google_project_service" "iam-api" {
   service = "iam.googleapis.com"
 }
 
+resource "google_project_service" "cloud-run-api" {
+  project = var.gcloud_project
+  service = "run.googleapis.com"
+}
+
+resource "google_project_service" "cloud-error-reporting-api" {
+  project = var.gcloud_project
+  service = "clouderrorreporting.googleapis.com"
+}

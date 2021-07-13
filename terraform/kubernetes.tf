@@ -17,3 +17,9 @@ resource "google_container_cluster" "autopilot" {
     enabled = true
   }
 }
+
+resource "google_project_iam_member" "kubernetes-editable-by-apiserver" {
+  project = var.gcloud_project
+  role    = "roles/container.developer"
+  member  = "serviceAccount:${google_service_account.apiserver.email}"
+}
