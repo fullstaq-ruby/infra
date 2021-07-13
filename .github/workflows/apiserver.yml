@@ -1,0 +1,95 @@
+name: API Server CI/CD
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: 'Deploy? Set to true'
+        required: true
+  push:
+    paths:
+      - .github/workflows/apiserver.yml
+      - apiserver/**
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12'
+
+      - name: Install eclint
+        run: npm install -g eclint
+      - name: Check EditorConfig compliance
+        run: eclint check $(git ls-files) apiserver
+
+  build_publish:
+    runs-on: ubuntu-20.04
+    needs: test
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to Google Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: gcr.io
+          username: _json_key
+          password: ${{ secrets.GCLOUD_KEY }}
+
+      - name: Build image
+        run: >
+          docker build
+          --pull
+          --cache-from gcr.io/fullstaq-ruby/cache_apiserver
+          --build-arg BUILDKIT_INLINE_CACHE=1
+          -t apiserver
+          apiserver
+        env:
+          DOCKER_BUILDKIT: '1'
+
+      - name: Update cache
+        run: |
+          docker tag apiserver gcr.io/fullstaq-ruby/cache_apiserver
+          docker push gcr.io/fullstaq-ruby/cache_apiserver
+
+      - name: Push image
+        if: github.ref == 'refs/heads/main' || github.event.inputs.deploy == 'true'
+        run: |
+          docker tag apiserver gcr.io/fullstaq-ruby/apiserver
+          docker push gcr.io/fullstaq-ruby/apiserver
+
+  deploy:
+    runs-on: ubuntu-20.04
+    needs: build_publish
+    if: github.ref == 'refs/heads/main' || github.event.inputs.deploy == 'true'
+    steps:
+      - name: Login to Google Cloud
+        run: gcloud auth activate-service-account --key-file <(echo "$GCLOUD_KEY")
+        env:
+          GCLOUD_KEY: ${{ secrets.GCLOUD_KEY }}
+
+      - name: Deploy
+        run: >
+          gcloud run deploy
+          --project=fullstaq-ruby
+          --platform=managed
+          --region=us-east4
+          --service-account=apiserver
+          --image=gcr.io/fullstaq-ruby/apiserver:latest
+          --cpu=1
+          --memory=256Mi
+          --max-instances=1
+          --no-allow-unauthenticated
+          --concurrency=1
+          apiserver
+
+      - name: Allow calls from Server Edition CI bot
+        run: >
+          gcloud run services
+          add-iam-policy-binding apiserver
+          --project=fullstaq-ruby
+          --platform=managed
+          --region=us-east4
+          --member=serviceAccount:server-edition-ci-bot@fullstaq-ruby.iam.gserviceaccount.com
+          --role=roles/run.invoker

@@ -24,7 +24,7 @@ In Google Cloud, create two projects:
  3. Go to Security ➜ Secret Manager.
  4. Create a secret with the name `gpg-private-key` and upload the private key.
 
-## Step 3: Create Github repositories and CI account
+## Step 3: Create Github repositories
 
 Create the following Github repositories:
 
@@ -33,95 +33,7 @@ Create the following Github repositories:
  * `fullstaq-labs/fullstaq-ruby-infra`
  * `fullstaq-labs/fullstaq-ruby-website`
 
-## Step 4: Create a Bintray account
-
-Sign up for an open source Bintray account, with organization name `fullstaq`.
-
-### Organization settings
-
-General:
-
- * Name: Fullstaq
- * Location: Netherlands
- * Website: https://fullstaq.com
- * Email: info@fullstaq.com
- * Show my email address to other users
-
-GPG signing:
-
- * Upload the GPG public and private keys.
-
-Accounts:
-
- * Twitter: fullstaq
-
-### fullstaq-ruby-apt
-
-Create a repo with this name.
-
- * Public access
- * Type: Debian
- * No trivial index
- * Default licenses: BSD 2-Clause, MIT
-
-After creating, edit the repo, and set:
-
- * Sign using: User's/Organization's GPG private key
- * Content: Only meta-data files
-
-In the repo, create a package.
-
- * Name: fullstaq-ruby
- * Maturity: Stable
- * Website: https://fullstaqruby.org
- * Issue tracker: https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/issues
- * Version control: https://github.com/fullstaq-labs/fullstaq-ruby-server-edition
- * Make download numbers in stats public
-
-### fullstaq-ruby-yum
-
-Create a repo with this name.
-
- * Public access
- * Type: RPM
- * YUM metadata folder depth: 2
- * YUM groups file: none, leave empty
- * Default licenses: BSD 2-Clause, MIT
-
-After creating, edit the repo, and set:
-
- * Sign using: User's/Organization's GPG private key
- * Content: Only meta-data files
-
-In the repo, create a package.
-
- * Name: fullstaq-ruby
- * Maturity: Stable
- * Website: https://fullstaqruby.org
- * Issue tracker: https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/issues
- * Version control: https://github.com/fullstaq-labs/fullstaq-ruby-server-edition
- * Make download numbers in stats public
-
-## Step 5: Store Bintray API key in Secret Manager
-
- 1. In Bintray, have the account owner create an API key.
- 2. Go to the `fullstaq-ruby-hisec` Google Cloud project.
- 3. Go to Security ➜ Secret Manager.
- 4. Create two secrets:
-
-     - `bintray-api-username`: the API key owner's Bintray username.
-     - `bintray-api-key`: the API key.
-
-## Step 6: Install Bintray API key as a Github Actions secret
-
-In Bintray, have the account owner create an API key, if not already done.
-
-In the [fullstaq-ruby-server-edition](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/settings/secrets) repo, create the following Github Actions secrets:
-
- * `BINTRAY_API_USERNAME`: the Bintray account owner's username.
- * `BINTRAY_API_KEY`: the created API key.
-
-## Step 7: Create Terraform state buckets
+## Step 4: Create Terraform state buckets
 
 In the `fullstaq-ruby` Google Cloud project, create a Cloud Storage bucket with the following parameters:
 
@@ -147,7 +59,7 @@ In the `fullstaq-ruby-hisec` Google Cloud project, create a Cloud Storage bucket
  * No retention policy
  * No labels
 
-## Step 8: Run Terraform (hisec)
+## Step 5: Run Terraform (hisec)
 
 Setup the Google Cloud CLI's application default credentials if you haven't yet:
 
@@ -163,7 +75,7 @@ terraform init
 terraform apply
 ~~~
 
-## Step 9: Run Terraform (normal)
+## Step 6: Run Terraform (normal)
 
 Setup the Google Cloud CLI's application default credentials if you haven't yet:
 
@@ -179,26 +91,37 @@ terraform init
 terraform apply
 ~~~
 
-## Step 10: Register domain
+## Step 7: Register domain
 
 In [TransIP](https://www.transip.nl/), register the domain `fullstaqruby.org`.
 
 Configure it to use the Google Cloud DNS zone in the `fullstaq-ruby` project. For instruction on how to do this, go to the Google Cloud DNS zone's configuration panel, and view the "Registrar setup" instructions.
 
-## Step 11: Install service account private key as a Github Actions secret
+## Step 8: Install service account private keys as Github Actions secrets
 
-Terraform has created a service account that developers' CI/CD systems can use to publish artifacts to the `fullstaq-ruby` Google Cloud project. We copy this service account's private key into a Github Actions secret.
+Terraform has created two service accounts. Their corresponding private keys must be installed as Github Actions secrets in the corresponding Github projects.
 
-First, fetch the private key (which is in JSON format, base64-encoded) from the Terraform state:
+ - _Infrastructure CI Bot_: used by the Infrastructure team's CI/CD systems.
 
-~~~bash
-cd terraform
-terraform show -json | jq -r '.values.root_module.resources[] | select(.name == "server-editions-ci-bot-sa-key") | .values.private_key'
-~~~
+   Fetch the private key (in JSON format, base64-encoded) from the Terraform state and decode it:
 
-In the [fullstaq-ruby-server-edition](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/settings/secrets) repo, paste this value into a secret named `GCLOUD_KEY`.
+   ~~~bash
+   pushd terraform && terraform show -json | jq -r '.values.root_module.resources[] | select(.name == "infra-ci-bot-sa-key") | .values.private_key' | base64 --decode && popd
+   ~~~
 
-## Step 12: Register a Github bot account
+   In the [fullstaq-ruby-infra](https://github.com/fullstaq-labs/fullstaq-ruby-infra/settings/secrets) repo, paste this value into a secret named `GCLOUD_KEY`.
+
+ - _Server Edition CI Bot_: used by Server Edition's developers' CI/CD systems to publish artifacts to the `fullstaq-ruby` Google Cloud project.
+
+   Fetch the private key (in JSON format, base64-encoded) from the Terraform state:
+
+   ~~~bash
+   pushd terraform && terraform show -json | jq -r '.values.root_module.resources[] | select(.name == "server-edition-ci-bot-sa-key") | .values.private_key' && popd
+   ~~~
+
+   In the [fullstaq-ruby-server-edition](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/settings/secrets) repo, paste this value into a secret named `GCLOUD_KEY`.
+
+## Step 9: Register a Github bot account
 
 ### Create an email inbox for the Github bot account
 
@@ -253,7 +176,7 @@ Store this token in Secret Manager:
 
  1. Go to the `fullstaq-ruby-hisec` Google Cloud project.
  2. Go to Security ➜ Secret Manager.
- 3. Create a secret with the name `fullstaq-ruby-ci-bot-server-edition-ci-pat` and insert the personal access token.
+ 3. Create a secret with the name `fullstaq-ruby-ci-bot-server-edition-pat` and insert the personal access token.
 
 ### Install Github Actions secret
 
@@ -263,6 +186,6 @@ In the [fullstaq-ruby-server-edition](https://github.com/fullstaq-labs/fullstaq-
 
 In the [fullstaq-ruby-server-edition](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/settings/access) repo, add fullstaq-ruby-ci-bot as a collaborator. Grant the "Write" access.
 
-## Step 13: Onboard everybody
+## Step 10: Onboard everybody
 
 Onboard everybody in the [members list](members.md) according to the [onboarding instructions](onboarding.md).
