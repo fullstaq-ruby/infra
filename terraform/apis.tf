@@ -18,6 +18,10 @@ resource "google_project_service" "dns-api" {
   service = "dns.googleapis.com"
 }
 
+resource "google_project_service" "secretmanager-api" {
+  service = "secretmanager.googleapis.com"
+}
+
 resource "google_project_service" "servicenetworking-api" {
   project = var.gcloud_project
   service = "servicenetworking.googleapis.com"
