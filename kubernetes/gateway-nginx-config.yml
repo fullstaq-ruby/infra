@@ -13,7 +13,7 @@ data:
           # Satisfy Google Cloud Balancer health check
           return 200 'OK';
         }
-        rewrite ^/(.*)$ https://storage.googleapis.com/fullstaq-ruby-server-edition-apt-repo/versions/1/$1 redirect;
+        rewrite ^/(.*)$ https://storage.googleapis.com/fullstaq-ruby-server-edition-apt-repo/versions/1/public/$1 redirect;
       }
     }
 
@@ -26,6 +26,6 @@ data:
           # Satisfy Google Cloud Balancer health check
           return 200 'OK';
         }
-        rewrite ^/(.*)$ https://storage.googleapis.com/fullstaq-ruby-server-edition-yum-repo/versions/1/$1 redirect;
+        rewrite ^/(.*)$ https://storage.googleapis.com/fullstaq-ruby-server-edition-yum-repo/versions/1/public/$1 redirect;
       }
     }
