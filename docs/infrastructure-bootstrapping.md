@@ -20,9 +20,14 @@ In Google Cloud, create two projects:
      - Name: Fullstaq Ruby
      - Email: info@fullstaq.com
      - Algorithm: 4096-bit RSA (or stronger)
- 2. Go to the `fullstaq-ruby-hisec` Google Cloud project.
- 3. Go to Security ➜ Secret Manager.
- 4. Create a secret with the name `gpg-private-key` and upload the private key.
+ 2. Store this in the `fullstaq-ruby-hisec` Google Cloud project's Secret Manager.
+     1. Go to the `fullstaq-ruby-hisec` Google Cloud project.
+     2. Go to Security ➜ Secret Manager.
+     3. Create a secret with the name `gpg-private-key` and upload the private key.
+ 3. Store this in the `fullstaq-ruby` Google Cloud project's Secret Manager.
+     1. Go to the `fullstaq-ruby` Google Cloud project.
+     2. Go to Security ➜ Secret Manager.
+     3. Create a secret with the name `gpg-private-key` and upload the private key.
 
 ## Step 3: Create Github repositories
 

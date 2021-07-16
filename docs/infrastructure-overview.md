@@ -121,6 +121,6 @@ The Server Edition's CI/CD system stores artifacts in this bucket, for the purpo
 
 ## GPG private key
 
- * Administered by role: Infra Owners
+ * Administered by role: Infra Owners, Infra Maintainers
 
-The GPG private key is used to sign APT and YUM repositories. We store the canonical copy in Secrets Manager in the `fullstaq-ruby-hisec` Google Cloud project.
+The GPG private key is used to sign APT and YUM repositories. We store the canonical copy in Secrets Manager in the `fullstaq-ruby-hisec` Google Cloud project. We store a secondary copy in the Secret Manager in the `fullstaq-ruby` Google Cloud project.
