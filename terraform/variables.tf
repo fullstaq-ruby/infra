@@ -12,7 +12,7 @@ variable "globally_unique_resource_prefix" {
 }
 
 variable "storage_location" {
-  default = "US-EAST4"
+  default = "US"
 }
 
 variable "kubernetes_region" {
