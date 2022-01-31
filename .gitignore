@@ -1,5 +1,6 @@
 .DS_Store
 .terraform
 .bundle
+.envrc
 *.auto.tfvars
 *.tfstate
