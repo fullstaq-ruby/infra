@@ -13,9 +13,8 @@ Create the `fullstaq-ruby` project in Google Cloud. And within that project, cre
 Next, create a Google Cloud CLI configuration for Fullstaq Ruby, and make sure the Google Cloud CLI is properly logged in (both using normal auth and application default auth):
 
 ~~~bash
-gcloud configurations create fullstaq-ruby
-gcloud auth application-default login
-gcloud auth login
+gcloud config configurations create fullstaq-ruby
+gcloud auth login --update-adc
 gcloud config set project fullstaq-ruby
 ~~~
 
