@@ -117,7 +117,7 @@ The `fullstaq-ruby` project has a container registry. This registry has two uses
 
  * Administered by role: Infra Maintainers
 
-The Server Edition's CI/CD system stores artifacts in this bucket, for the purpose of implementing [resumption](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/blob/main/dev-handbook/ci-cd-resumption.md). Objects in this bucket only live for 14 days.
+The Server Edition's CI/CD system stores artifacts in this bucket, for the purpose of implementing [resumption](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/blob/main/dev-handbook/ci-cd-resumption.md). Objects in this bucket only live for 30 days.
 
 ## GPG private key
 
