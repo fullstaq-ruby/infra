@@ -3,7 +3,7 @@ resource "google_storage_bucket" "server-edition-apt-repo" {
   name                        = "${var.globally_unique_resource_prefix}-server-edition-apt-repo"
   force_destroy               = true
   uniform_bucket_level_access = true
-  location                    = var.storage_location
+  location                    = var.gcloud_storage_location
 }
 
 resource "google_storage_bucket_iam_binding" "server-edition-apt-repo-public-viewable" {
@@ -24,7 +24,7 @@ resource "google_storage_bucket" "server-edition-yum-repo" {
   name                        = "${var.globally_unique_resource_prefix}-server-edition-yum-repo"
   force_destroy               = true
   uniform_bucket_level_access = true
-  location                    = var.storage_location
+  location                    = var.gcloud_storage_location
 }
 
 resource "google_storage_bucket_iam_binding" "server-edition-yum-repo-public-viewable" {

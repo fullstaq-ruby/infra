@@ -1,60 +1,75 @@
 # Deployment guide
 
-This guide explains how to deploy the infrastructure, both initially as well as updates.
+This guide explains how to deploy infrastructure updates. This guide is not for deploying the infrastructure from scratch! For that, see [Infrastructure bootstrapping](infrastructure-bootstrapping.md).
 
-## Prerequisites
+## Before you begin
 
-You need Terraform, kubectl and the Google Cloud CLI.
+ 1. Install the [required development tools](required-devtools.md).
 
-## Initial deployment
+ 2. Create a Google Cloud CLI configuration for Fullstaq Ruby, and make sure the Google Cloud CLI is properly logged in (both using normal auth and application default auth):
 
-Create the `fullstaq-ruby` project in Google Cloud. And within that project, create a Google Cloud Storage bucket for storing the Terraform state.
+    ~~~bash
+    gcloud config configurations create fullstaq-ruby
+    gcloud auth login --update-adc
+    gcloud config set project fullstaq-ruby
+    ~~~
 
-Next, create a Google Cloud CLI configuration for Fullstaq Ruby, and make sure the Google Cloud CLI is properly logged in (both using normal auth and application default auth):
+ 3. Login the Azure CLI:
 
-~~~bash
-gcloud config configurations create fullstaq-ruby
-gcloud auth login --update-adc
-gcloud config set project fullstaq-ruby
-~~~
+    ~~~bash
+    az login
+    ~~~
 
-Next, initialize Terraform:
+## Deploying updates
 
-~~~bash
-cd terraform
-terraform init
-~~~
+ 1. Make sure the `fullstaq-ruby` Google Cloud CLI configuration is activated, and that the Azure CLI is logged in.
 
-Finally, create the infrastructure:
+ 2. Deploy `terraform-hisec/`:
 
-~~~bash
-terraform apply
-~~~
+     1. (Re)initialize Terraform if necessary:
 
-Terraform would have created a Kubernetes cluster. Pass its connection credentials to kubectl:
+        ~~~bash
+        cd terraform-hisec
+        terraform init
+        ~~~
 
-~~~bash
-gcloud container clusters get-credentials fullstaq-ruby-autopilot --configuration fullstaq-ruby --region us-east4
-~~~
+     2. Apply Terraform:
 
-Set the default namespace:
+        ~~~bash
+        terraform apply
+        cd ..
+        ~~~
 
-~~~bash
-kubectl config set-context --current --namespace=fullstaq-ruby
-~~~
+ 3. Deploy `terraform/`:
 
-Then apply its Kustomization file:
+     1. (Re)initialize Terraform if necessary:
 
-~~~bash
-kubectl apply --context=gke_fullstaq-ruby_us-east4_fullstaq-ruby-autopilot -k ../kubernetes
-~~~
+        ~~~bash
+        cd terraform
+        terraform init
+        ~~~
 
-## Updates
+     2. Apply Terraform:
 
-These steps assume that your Google Cloud CLI is properly logged in and set to the right project, that your Terraform is initialized, and that your kubectl is authenticated to the Kubernetes cluster.
+        ~~~bash
+        terraform apply
+        cd ..
+        ~~~
 
-~~~bash
-cd terraform
-terraform apply
-kubectl apply --context=gke_fullstaq-ruby_us-east4_fullstaq-ruby-autopilot -k ../kubernetes
-~~~
+ 4. Get the credentials for the Kubernetes cluster:
+
+    ~~~bash
+    gcloud container clusters get-credentials fullstaq-ruby-autopilot --configuration fullstaq-ruby --region us-east4
+    ~~~
+
+ 5. Set the default namespace:
+
+    ~~~bash
+    kubectl config set-context --current --namespace=fullstaq-ruby
+    ~~~
+
+ 6. Apply the Kustomization:
+
+    ~~~bash
+    kubectl apply --context=gke_fullstaq-ruby_us-east4_fullstaq-ruby-autopilot -k ../kubernetes
+    ~~~
