@@ -3,13 +3,7 @@ resource "google_storage_bucket" "server-edition-ci-artifacts" {
   name                        = "${var.globally_unique_resource_prefix}-server-edition-ci-artifacts"
   force_destroy               = true
   uniform_bucket_level_access = true
-
-  # All Github-hosted runners are located in the US,
-  # of which two are located in Virginia. So we
-  # pick Google Cloud's Virginia region too.
-  # https://docs.github.com/en/actions/reference/virtual-environments-for-github-hosted-runners#ip-addresses-of-github-hosted-runners
-  # https://azure.microsoft.com/en-us/global-infrastructure/geographies/#geographies
-  location = "US-EAST4"
+  location                    = var.gcloud_storage_location_preferred_by_github_runners
 
   lifecycle_rule {
     condition {

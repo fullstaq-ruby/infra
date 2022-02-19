@@ -29,7 +29,11 @@ In Google Cloud, create two projects:
      2. Go to Security ➜ Secret Manager.
      3. Create a secret with the name `gpg-private-key` and upload the private key.
 
-## Step 3: Create Github repositories
+## Step 3: Sign up for Azure
+
+Create an Azure Active Directory tenant and a subscription.
+
+## Step 4: Create Github repositories
 
 Create the following Github repositories:
 
@@ -38,7 +42,7 @@ Create the following Github repositories:
  * `fullstaq-labs/fullstaq-ruby-infra`
  * `fullstaq-labs/fullstaq-ruby-website`
 
-## Step 4: Create Terraform state buckets
+## Step 5: Create Terraform state buckets
 
 In the `fullstaq-ruby` Google Cloud project, create a Cloud Storage bucket with the following parameters:
 
@@ -64,13 +68,15 @@ In the `fullstaq-ruby-hisec` Google Cloud project, create a Cloud Storage bucket
  * No retention policy
  * No labels
 
-## Step 5: Run Terraform (hisec)
+## Step 6: Run Terraform (hisec)
 
-Setup the Google Cloud CLI's application default credentials if you haven't yet:
+Login Google Cloud CLI if you haven't yet:
 
 ~~~bash
-gcloud auth application-default login
+gcloud auth login --update-adc
 ~~~
+
+Then modify `terraform-hisec/variables.tf` and populate the right Azure object IDs.
 
 Then run Terraform:
 
@@ -78,15 +84,18 @@ Then run Terraform:
 cd terraform-hisec
 terraform init
 terraform apply
+cd ..
 ~~~
 
-## Step 6: Run Terraform (normal)
+## Step 7: Run Terraform (normal)
 
-Setup the Google Cloud CLI's application default credentials if you haven't yet:
+Login Google Cloud CLI if you haven't yet:
 
 ~~~bash
-gcloud auth application-default login
+gcloud auth login --update-adc
 ~~~
+
+Then modify `terraform/variables.tf` and populate the right Azure object IDs.
 
 Then run Terraform:
 
@@ -94,17 +103,18 @@ Then run Terraform:
 cd terraform
 terraform init
 terraform apply
+cd ..
 ~~~
 
-## Step 7: Register domain
+## Step 8: Register domain
 
 In [TransIP](https://www.transip.nl/), register the domain `fullstaqruby.org`.
 
 Configure it to use the Google Cloud DNS zone in the `fullstaq-ruby` project. For instruction on how to do this, go to the Google Cloud DNS zone's configuration panel, and view the "Registrar setup" instructions.
 
-## Step 8: Install service account private keys as Github Actions secrets
+## Step 9: Populate Github Actions secrets
 
-Terraform has created two service accounts. Their corresponding private keys must be installed as Github Actions secrets in the corresponding Github projects.
+Terraform has created two Google Cloud service accounts and one Azure storage account. Their corresponding private keys and connection string must be installed as Github Actions secrets in the corresponding Github projects.
 
  - _Infrastructure CI Bot_: used by the Infrastructure team's CI/CD systems.
 
@@ -116,17 +126,25 @@ Terraform has created two service accounts. Their corresponding private keys mus
 
    In the [fullstaq-ruby-infra](https://github.com/fullstaq-labs/fullstaq-ruby-infra/settings/secrets) repo, paste this value into a secret named `GCLOUD_KEY`.
 
- - _Server Edition CI Bot_: used by Server Edition's developers' CI/CD systems to publish artifacts to the `fullstaq-ruby` Google Cloud project.
+ - _Server Edition CI Bot_: used by Server Edition's developers' CI/CD systems to publish artifacts to the `fullstaq-ruby` Google Cloud project, and to cache to the `fsrubyseredci` Azure storage account.
 
-   Fetch the private key (in JSON format, base64-encoded) from the Terraform state:
+    - Fetch the Google Cloud service account private key (in JSON format, base64-encoded) from the Terraform state:
 
-   ~~~bash
-   pushd terraform && terraform show -json | jq -r '.values.root_module.resources[] | select(.name == "server-edition-ci-bot-sa-key") | .values.private_key' && popd
-   ~~~
+      ~~~bash
+      pushd terraform && terraform show -json | jq -r '.values.root_module.resources[] | select(.name == "server-edition-ci-bot-sa-key") | .values.private_key' && popd
+      ~~~
 
-   In the [fullstaq-ruby-server-edition](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/settings/secrets) repo, paste this value into a secret named `GCLOUD_KEY`.
+      In the [fullstaq-ruby-server-edition](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/settings/secrets) repo, paste this value into a secret named `GCLOUD_KEY`.
 
-## Step 9: Register a Github bot account
+    - Fetch the Azure storage account connection string from the Terraform state:
+
+      ~~~bash
+      pushd terraform && terraform show -json | jq -r '.values.root_module.resources[] | select(.address == "azurerm_storage_account.server-edition-ci") | .values.primary_blob_connection_string' && popd
+      ~~~
+
+      In the [fullstaq-ruby-server-edition](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/settings/secrets) repo, paste this value into a secret named `AZURE_CI1_STORAGE_CONNECTION_STRING`.
+
+## Step 10: Register a Github bot account
 
 ### Create an email inbox for the Github bot account
 
@@ -191,6 +209,6 @@ In the [fullstaq-ruby-server-edition](https://github.com/fullstaq-labs/fullstaq-
 
 In the [fullstaq-ruby-server-edition](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/settings/access) repo, add fullstaq-ruby-ci-bot as a collaborator. Grant the "Write" access.
 
-## Step 10: Onboard everybody
+## Step 11: Onboard everybody
 
 Onboard everybody in the [members list](members.md) according to the [onboarding instructions](onboarding.md).
