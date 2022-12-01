@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'google-cloud-error_reporting'
 gem 'puma'
-gem 'sinatra', '~> 2.1'
+gem 'sinatra', '~> 2.2'
 
 group :development do
   gem 'byebug'
