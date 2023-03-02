@@ -11,6 +11,4 @@ spec:
   ingress:
     - ports:
         - protocol: TCP
-          port: 8001
-        - protocol: TCP
-          port: 8002
+          port: 80
