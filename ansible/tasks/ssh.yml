@@ -1,0 +1,6 @@
+- name: "ssh: allow root login with keys"
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^PermitRootLogin .*'
+    line: PermitRootLogin without-password
+  notify: Reload sshd

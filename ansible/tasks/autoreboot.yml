@@ -1,0 +1,17 @@
+- name: Install autoreboot script
+  copy:
+    src: autoreboot.sh
+    dest: /usr/local/bin/autoreboot
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Install autoreboot cron job
+  cron:
+    name: Autoreboot every Sunday
+    minute: '0'
+    hour: '3'
+    weekday: '0'
+    job: /usr/local/bin/autoreboot
+    user: root
+    cron_file: autoreboot

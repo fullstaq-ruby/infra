@@ -1,10 +1,7 @@
 source 'https://rubygems.org'
 
-gem 'google-cloud-error_reporting'
-gem 'puma'
-gem 'sinatra', '~> 2.1'
+ruby '>= 3.2'
 
-group :development do
-  gem 'byebug'
-  gem 'pry'
-end
+gem 'puma'
+gem 'sinatra', '~> 4'
+gem 'jwt'

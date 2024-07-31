@@ -1,6 +1,6 @@
 resource "google_storage_bucket" "server-edition-apt-repo" {
   depends_on                  = [google_project_service.storage-api]
-  name                        = "${var.globally_unique_resource_prefix}-server-edition-apt-repo"
+  name                        = "${var.gcloud_bucket_prefix}-server-edition-apt-repo"
   force_destroy               = true
   uniform_bucket_level_access = true
   location                    = var.gcloud_storage_location
@@ -21,7 +21,7 @@ resource "google_storage_bucket_iam_binding" "server-edition-apt-repo-writable-b
 
 resource "google_storage_bucket" "server-edition-yum-repo" {
   depends_on                  = [google_project_service.storage-api]
-  name                        = "${var.globally_unique_resource_prefix}-server-edition-yum-repo"
+  name                        = "${var.gcloud_bucket_prefix}-server-edition-yum-repo"
   force_destroy               = true
   uniform_bucket_level_access = true
   location                    = var.gcloud_storage_location

@@ -1,0 +1,9 @@
+- name: Enable apiserver
+  systemd_service:
+    name: apiserver
+    enabled: true
+
+- name: Restart apiserver
+  service:
+    name: apiserver
+    state: restarted

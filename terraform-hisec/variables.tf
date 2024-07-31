@@ -1,43 +1,58 @@
-variable "gcloud_project" {
+variable "azure_tenant_id" {
   type    = string
-  default = "fullstaq-ruby-hisec"
+  default = "1907c1de-23e9-40f4-89ea-4adfabb7d409"
 }
 
 variable "azure_subscription_id" {
   type    = string
-  default = "77fae31b-3e8a-4c34-910a-1ad75ec12cb9"
+  default = "3ab8732c-429b-41e8-80a8-f46106e67e11"
 }
 
-variable "azure_tenant_id" {
+variable "tfstate_resource_group_name" {
   type    = string
-  default = "36205039-4c19-4879-a98a-ece51e361a19"
+  default = "fullstaq-ruby-terraform-hisec"
 }
 
-variable "azure_active_directory_owner" {
+variable "tfstate_storage_account_name" {
   type    = string
-  default = "806ff7a2-62c0-46d4-87f8-c340e07794c6"
+  default = "fsrubyterraformhisec"
 }
 
-variable "azure_location_preferred_by_github_runners" {
-  type = string
-  # https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/issues/86#issuecomment-1032643774
-  # https://docs.github.com/en/actions/reference/virtual-environments-for-github-hosted-runners#ip-addresses-of-github-hosted-runners
-  # https://azure.microsoft.com/en-us/global-infrastructure/geographies/#geographies
-  default = "West US 2"
+variable "storage_account_prefix" {
+  type    = string
+  default = "fsruby2"
+}
+
+variable "key_vault_prefix" {
+  type    = string
+  default = "fsruby2"
+}
+
+variable "gcloud_org_id" {
+  type    = string
+  default = "252249970036"
+}
+
+variable "gcloud_project_id" {
+  type    = string
+  default = "fsruby-server-edition2"
+}
+
+variable "gcloud_billing_account_id" {
+  type    = string
+  default = "018150-C9AFC8-E009BB"
 }
 
 variable "infra_owners_azure_group_members" {
   type = list(string)
   default = [
-    "cc17a6d2-f8e4-40cd-9074-6861768c8311", # Fabian Met
-    "806ff7a2-62c0-46d4-87f8-c340e07794c6", # Hongli Lai
+    "bd39226a-d395-46c3-a865-782111c5edc5", # Hongli Lai
   ]
 }
 
 variable "infra_maintainers_azure_group_members" {
   type = list(string)
   default = [
-    "cc17a6d2-f8e4-40cd-9074-6861768c8311", # Fabian Met
-    "806ff7a2-62c0-46d4-87f8-c340e07794c6", # Hongli Lai
+    "2f1efb75-a4a9-4b3c-aec5-a40b51fbfe86", # Hongli Lai infra-maintainer account
   ]
 }

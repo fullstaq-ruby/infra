@@ -1,0 +1,29 @@
+- name: Install APT HTTPS support
+  apt:
+    name:
+      - debian-keyring
+      - debian-archive-keyring
+      - apt-transport-https
+      - curl
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Install Ruby
+  apt:
+    name:
+      - ruby
+      - ruby-bundler
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Install jq
+  apt:
+    name: jq
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Install zstd
+  apt:
+    name: zstd
+    update_cache: true
+    cache_valid_time: 3600

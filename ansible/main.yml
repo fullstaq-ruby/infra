@@ -1,0 +1,24 @@
+- hosts: all
+  vars_files:
+    - vars/main.yml
+    - vars/terraform.yml
+  tasks:
+    - import_tasks: tasks/essentials.yml
+    - import_tasks: tasks/ssh.yml
+    - import_tasks: tasks/fail2ban.yml
+    - import_tasks: tasks/apparmor.yml
+    - import_tasks: tasks/autoreboot.yml
+    - import_tasks: tasks/unattended-upgrades.yml
+    - import_tasks: tasks/ufw.yml
+    - import_tasks: tasks/prometheus.yml
+    - import_tasks: tasks/caddy.yml
+    - import_tasks: tasks/apiserver-deployer.yml
+    - import_tasks: tasks/apiserver.yml
+
+  handlers:
+    - import_tasks: handlers/ssh.yml
+    - import_tasks: handlers/systemd.yml
+    - import_tasks: handlers/apiserver.yml
+    - import_tasks: handlers/apiserver-deployer.yml
+    - import_tasks: handlers/caddy.yml
+    - import_tasks: handlers/prometheus.yml

@@ -1,0 +1,102 @@
+- name: Install Caddy with Azure DNS plugin
+  get_url:
+    url: "https://caddyserver.com/api/download?os=linux&arch={{ caddy_arch }}&version={{ caddy_version }}&p=github.com%2Fcaddy-dns%2Fazure"
+    dest: "/usr/local/bin/caddy-{{ caddy_version }}"
+    mode: 0755
+    owner: root
+    group: root
+  vars:
+    caddy_arch: "{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' if ansible_architecture in ['x86_64', 'amd64'] else ansible_architecture }}"
+
+- name: Activate Caddy version
+  file:
+    src: "/usr/local/bin/caddy-{{ caddy_version }}"
+    dest: /usr/local/bin/caddy
+    state: link
+  notify: Restart Caddy
+
+- name: Create Caddy group
+  group:
+    name: caddy
+    gid: 988
+
+- name: Create Caddy user
+  user:
+    name: caddy
+    group: caddy
+    system: true
+    uid: 999
+    shell: /usr/sbin/nologin
+
+- name: Install repo version query script
+  copy:
+    src: query-latest-repo-versions.rb
+    dest: /usr/local/bin/query-latest-repo-versions
+    owner: root
+    group: root
+    mode: 0755
+  notify: Restart Caddy
+
+- name: Create Caddy config dir
+  file:
+    path: /etc/caddy
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Create Caddy environment file
+  template:
+    src: caddy-env.j2
+    dest: /etc/caddy/env
+    owner: root
+    group: caddy
+    mode: 0640
+  vars:
+    keyvault_get_dns_updater_client_id_command: >-
+      az keyvault secret show
+      -o tsv --query value
+      --subscription {{ azure_subscription_id | quote }}
+      --vault-name {{ key_vault_prefix | quote }}inframaint
+      --name caddy-sp-client-id
+    keyvault_get_dns_updater_client_secret_command: >-
+      az keyvault secret show
+      -o tsv --query value
+      --subscription {{ azure_subscription_id | quote }}
+      --vault-name {{ key_vault_prefix | quote }}inframaint
+      --name caddy-sp-client-secret
+  notify: Restart Caddy
+
+- name: Ensure Caddy env-repo-versions file exists
+  command: touch /etc/caddy/env-repo-versions
+  args:
+    creates: /etc/caddy/env-repo-versions
+
+- name: Set Caddy env-repo-versions file permissions
+  file:
+    path: /etc/caddy/env-repo-versions
+    state: file
+    owner: caddy
+    group: caddy
+    mode: 0644
+
+- name: Install Caddy config file
+  copy:
+    src: Caddyfile
+    dest: /etc/caddy/Caddyfile
+    owner: caddy
+    group: caddy
+    mode: 0644
+  notify: Restart Caddy
+
+- name: Create Caddy systemd service
+  copy:
+    src: caddy.service
+    dest: /etc/systemd/system/caddy.service
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - Reload systemd
+    - Enable Caddy
+    - Restart Caddy

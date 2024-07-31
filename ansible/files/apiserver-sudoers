@@ -1,0 +1,3 @@
+apiserver ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart caddy
+apiserver ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart apiserver-deployer
+apiserver ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart apiserver

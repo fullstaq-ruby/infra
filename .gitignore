@@ -1,6 +1,9 @@
+.vscode
 .DS_Store
 .terraform
 .bundle
 .envrc
+.azure
+.byebug_history
 *.auto.tfvars
 *.tfstate

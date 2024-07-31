@@ -1,0 +1,17 @@
+[Unit]
+Description=API server deployer
+After=network.target network-online.target
+Requires=network-online.target
+
+[Service]
+Type=oneshot
+User=apiserver-deployer
+Group=apiserver-deployer
+PrivateTmp=true
+ProtectSystem=full
+ReadWritePaths=/opt/apiserver/versions
+ExecStart=/usr/local/bin/apiserver-deployer
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

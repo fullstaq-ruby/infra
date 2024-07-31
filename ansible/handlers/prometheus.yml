@@ -1,0 +1,4 @@
+- name: Reload Prometheus
+  service:
+    name: prometheus
+    state: reloaded

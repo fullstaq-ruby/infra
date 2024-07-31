@@ -1,0 +1,39 @@
+- name: Create apiserver group
+  group:
+    name: apiserver
+    gid: 955
+
+- name: Create apiserver user
+  user:
+    name: apiserver
+    group: apiserver
+    uid: 955
+
+- name: Install apiserver sudoers entry
+  copy:
+    src: apiserver-sudoers
+    dest: /etc/sudoers.d/apiserver
+    owner: root
+    group: root
+    mode: 0440
+
+- name: Install apiserver tmpfiles.d config
+  copy:
+    src: apiserver-tmpfiles.conf
+    dest: /usr/lib/tmpfiles.d/apiserver.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: Create systemd-tmpfiles
+
+- name: Install apiserver systemd unit
+  copy:
+    src: apiserver.service
+    dest: /etc/systemd/system/apiserver.service
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - Reload systemd
+    - Enable apiserver
+    - Restart apiserver

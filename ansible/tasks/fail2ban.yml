@@ -1,0 +1,5 @@
+- name: Install fail2ban
+  apt:
+    name: fail2ban
+    update_cache: true
+    cache_valid_time: 3600

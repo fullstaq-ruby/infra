@@ -15,13 +15,13 @@ jobs:
   check:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '12'
-      - uses: hashicorp/setup-terraform@v1
+          node-version: '20'
+      - uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: '0.13.0'
+          terraform_version: '1.5.7'
 
       - name: Install eclint
         run: npm install -g eclint

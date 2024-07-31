@@ -1,0 +1,4 @@
+- name: Restart apiserver-deployer
+  service:
+    name: apiserver-deployer
+    state: restarted

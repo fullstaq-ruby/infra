@@ -1,33 +1,30 @@
 terraform {
   required_providers {
-    google = {
-      source  = "hashicorp/google"
-      version = "~> 3.34.0"
-    }
-
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 2.96.0"
+      version = "~> 3.111.0"
     }
 
     azuread = {
       source  = "hashicorp/azuread"
-      version = "~> 2.18.0"
+      version = "~> 2.53.1"
+    }
+
+    google = {
+      source  = "hashicorp/google"
+      version = "~> 5.38.0"
     }
   }
 
-  required_version = ">= 0.13"
-}
-
-provider "google" {
-  project = var.gcloud_project
+  required_version = ">= 1.5"
 }
 
 provider "azurerm" {
   features {}
 
-  subscription_id = var.azure_subscription_id
-  tenant_id       = var.azure_tenant_id
+  tenant_id           = var.azure_tenant_id
+  subscription_id     = var.azure_subscription_id
+  storage_use_azuread = true
 }
 
 provider "azuread" {

@@ -1,0 +1,20 @@
+- name: Install Prometheus
+  apt:
+    name: prometheus
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Install Prometheus node exporter
+  apt:
+    name: prometheus-node-exporter
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Install Prometheus config
+  copy:
+    src: files/prometheus.yml
+    dest: /etc/prometheus/prometheus.yml
+    owner: root
+    group: root
+    mode: 0600
+  notify: Reload Prometheus

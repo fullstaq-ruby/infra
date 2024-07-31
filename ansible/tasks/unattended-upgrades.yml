@@ -1,0 +1,19 @@
+- name: "unattended-upgrades: Install"
+  apt:
+    name: unattended-upgrades
+    update_cache: yes
+    cache_valid_time: 600 # 10 minutes
+
+- name: "unattended-upgrades: Install config file"
+  template:
+    src: "50unattended-upgrades.j2"
+    dest: /etc/apt/apt.conf.d/50unattended-upgrades
+
+- name: "unattended-upgrades: Activate"
+  copy:
+    src: 20auto-upgrades
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+
+- name: Install unattended-upgrades-prometheus-collector
+  apt:
+    deb: https://github.com/FooBarWidget/unattended-upgrades-prometheus-collector/releases/download/v1.0.0/unattended-upgrades-prometheus-collector_1.0.0_all.deb

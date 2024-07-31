@@ -1,0 +1,9 @@
+- name: Enable Caddy
+  systemd_service:
+    name: caddy
+    enabled: true
+
+- name: Restart Caddy
+  service:
+    name: caddy
+    state: restarted

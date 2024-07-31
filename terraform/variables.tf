@@ -1,42 +1,36 @@
-variable "gcloud_project" {
-  default = "fullstaq-ruby"
-}
-
-variable "dns_name" {
-  default = "fullstaqruby.org."
-}
-
-variable "globally_unique_resource_prefix" {
-  default     = "fullstaq-ruby"
-  description = "Prefix for naming resources that must have globally unique names, such as Cloud Storage buckets"
-}
-
-variable "gcloud_storage_location" {
-  default = "US"
-}
-
-variable "kubernetes_region" {
-  default = "us-east4"
-}
-
 variable "azure_subscription_id" {
   type    = string
-  default = "77fae31b-3e8a-4c34-910a-1ad75ec12cb9"
+  default = "3ab8732c-429b-41e8-80a8-f46106e67e11"
 }
 
 variable "azure_tenant_id" {
   type    = string
-  default = "36205039-4c19-4879-a98a-ece51e361a19"
+  default = "1907c1de-23e9-40f4-89ea-4adfabb7d409"
 }
 
-variable "infra_owners_azure_group_object_id" {
+variable "gcloud_project_id" {
   type    = string
-  default = "3e5dac1c-5ca9-4623-92f5-aae6ecee4de5"
+  default = "fsruby-server-edition2"
 }
 
-variable "infra_maintainers_azure_group_object_id" {
+variable "dns_name" {
   type    = string
-  default = "3281e765-1b4e-4420-8bd7-30ef3de9c8bc"
+  default = "fullstaqruby.org"
+}
+
+variable "storage_account_prefix" {
+  type    = string
+  default = "fsruby2"
+}
+
+variable "gcloud_bucket_prefix" {
+  type    = string
+  default = "fsruby"
+}
+
+variable "gcloud_storage_location" {
+  type    = string
+  default = "US"
 }
 
 variable "azure_location_preferred_by_github_runners" {
@@ -53,4 +47,19 @@ variable "gcloud_storage_location_preferred_by_github_runners" {
   # https://docs.github.com/en/actions/reference/virtual-environments-for-github-hosted-runners#ip-addresses-of-github-hosted-runners
   # https://azure.microsoft.com/en-us/global-infrastructure/geographies/#geographies
   default = "US-EAST4"
+}
+
+variable "backend_server_ipv4" {
+  type    = string
+  default = "157.90.113.138"
+}
+
+variable "backend_server_ipv6" {
+  type    = string
+  default = "2a01:4f8:1c1c:7ac0::1"
+}
+
+variable "key_vault_prefix" {
+  type    = string
+  default = "fsruby2"
 }

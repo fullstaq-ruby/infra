@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       deploy:
-        description: 'Deploy? Set to true'
+        description: "Deploy? Set to true"
         required: true
   push:
     paths:
@@ -12,84 +12,109 @@ on:
       - apiserver/**
 
 jobs:
-  test:
-    runs-on: ubuntu-20.04
+  build:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '12'
+          node-version: "20"
 
       - name: Install eclint
         run: npm install -g eclint
       - name: Check EditorConfig compliance
         run: eclint check $(git ls-files) apiserver
 
-  build_publish:
-    runs-on: ubuntu-20.04
-    needs: test
-    steps:
-      - uses: actions/checkout@v2
-      - name: Login to Google Container Registry
-        uses: docker/login-action@v1
+      - name: Check that we're using system Ruby
+        run: test "$(which ruby)" = /usr/bin/ruby
+
+      - uses: actions/cache@v4
         with:
-          registry: gcr.io
-          username: _json_key
-          password: ${{ secrets.GCLOUD_KEY }}
+          path: apiserver/vendor/bundle
+          key: ${{ runner.os }}-24.04-${{ runner.arch }}-gems-${{ hashFiles('apiserver/Gemfile.lock') }}
 
-      - name: Build image
-        run: >
-          docker build
-          --pull
-          --cache-from gcr.io/fullstaq-ruby/cache_apiserver
-          --build-arg BUILDKIT_INLINE_CACHE=1
-          -t apiserver
-          apiserver
+      - name: Install matching Bundler version
+        run: sudo gem install bundler -v $(grep -A1 "BUNDLED WITH" Gemfile.lock | tail -n1) --no-document
+        working-directory: apiserver
+
+      - name: Install gem bundle
+        run: bundle install
+        working-directory: apiserver
         env:
-          DOCKER_BUILDKIT: '1'
+          BUNDLE_DEPLOYMENT: "true"
+          BUNDLE_PATH: vendor/bundle
+          BUNDLE_JOBS: 4
+          BUNDLE_RETRY: 3
+          BUNDLE_CLEAN: "true"
 
-      - name: Update cache
-        run: |
-          docker tag apiserver gcr.io/fullstaq-ruby/cache_apiserver
-          docker push gcr.io/fullstaq-ruby/cache_apiserver
+      - name: Create tarball
+        run: >
+          tar
+          -c
+          --use-compress-program 'zstd -T0'
+          --sort name
+          --owner root:0
+          --group root:0
+          --mtime '2024-01-01 00:00Z'
+          --preserve-permissions
+          --pax-option exthdr.name=%d/PaxHeaders/%f,delete=atime,delete=ctime
+          -f apiserver-"$GITHUB_RUN_NUMBER"-$(lsb_release --id --short | tr '[:upper:]' '[:lower:]')-$(lsb_release --release --short)-$(dpkg --print-architecture).tar.zst
+          -C apiserver
+          .
 
-      - name: Push image
-        if: github.ref == 'refs/heads/main' || github.event.inputs.deploy == 'true'
-        run: |
-          docker tag apiserver gcr.io/fullstaq-ruby/apiserver
-          docker push gcr.io/fullstaq-ruby/apiserver
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: apiserver
+          path: "*.tar.zst"
+          compression-level: 0
 
   deploy:
-    runs-on: ubuntu-20.04
-    needs: build_publish
+    runs-on: ubuntu-24.04
+    needs: build
     if: github.ref == 'refs/heads/main' || github.event.inputs.deploy == 'true'
+    environment: deploy
+    permissions:
+      contents: write
+      id-token: write
     steps:
-      - name: Login to Google Cloud
-        run: gcloud auth activate-service-account --key-file <(echo "$GCLOUD_KEY")
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: apiserver
+
+      - name: Create tag
+        run: git tag -f apiserver-"$GITHUB_RUN_NUMBER"
+
+      - name: Push tag
+        run: git push origin apiserver-"$GITHUB_RUN_NUMBER"
+
+      - name: Create release
+        run: >
+          gh release create
+          apiserver-"$GITHUB_RUN_NUMBER"
+          apiserver-*.tar.zst
+          --title "apiserver v$GITHUB_RUN_NUMBER"
+          --notes-from-tag
         env:
-          GCLOUD_KEY: ${{ secrets.GCLOUD_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/github-script@v7
+        id: get-id-token
+        with:
+          script: |
+            const fs = require('fs');
+            const token = await core.getIDToken('backend.fullstaqruby.org');
+            fs.writeFileSync(
+              process.env.GITHUB_OUTPUT,
+              `id_token<<EOF\n${token}\nEOF\n`,
+              { flag: 'a' }
+            );
 
       - name: Deploy
         run: >
-          gcloud run deploy
-          --project=fullstaq-ruby
-          --platform=managed
-          --region=us-east4
-          --service-account=apiserver
-          --image=gcr.io/fullstaq-ruby/apiserver:latest
-          --cpu=1
-          --memory=256Mi
-          --max-instances=1
-          --no-allow-unauthenticated
-          --concurrency=1
-          apiserver
-
-      - name: Allow calls from Server Edition CI bot
-        run: >
-          gcloud run services
-          add-iam-policy-binding apiserver
-          --project=fullstaq-ruby
-          --platform=managed
-          --region=us-east4
-          --member=serviceAccount:server-edition-ci-bot@fullstaq-ruby.iam.gserviceaccount.com
-          --role=roles/run.invoker
+          curl -fsSLv -X POST -H "Authorization: Bearer $TOKEN"
+          https://apt.fullstaqruby.org/admin/upgrade_apiserver

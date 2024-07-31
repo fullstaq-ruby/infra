@@ -1,0 +1,19 @@
+[Unit]
+Description=API server
+After=network.target network-online.target apiserver-deployer.service
+Requires=network-online.target
+Wants=apiserver-deployer.service
+
+[Service]
+Type=simple
+User=apiserver
+Group=apiserver
+WorkingDirectory=/opt/apiserver/versions/latest
+Environment=BUNDLE_PATH=vendor/bundle
+ExecStartPre=rm -f /run/apiserver/server.sock
+ExecStart=bundle exec puma -e production -b unix:///run/apiserver/server.sock
+PrivateTmp=true
+ProtectSystem=full
+
+[Install]
+WantedBy=multi-user.target

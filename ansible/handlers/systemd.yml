@@ -1,0 +1,6 @@
+- name: Reload systemd
+  systemd_service:
+    daemon_reload: true
+
+- name: Create systemd-tmpfiles
+  command: systemd-tmpfiles --create
