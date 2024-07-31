@@ -93,12 +93,23 @@ class App < Sinatra::Base
   end
 
   def valid_claims?(claims, repository, expected_claim_values)
-    return false unless claims['sub'].start_with?("repo:#{repository}:") &&
-      claims['repository'] == repository &&
-      claims['runner_environment'] == 'github-hosted'
-    expected_claim_values.each_pair do |key, value|
-      return false unless claims[key] == value
+    if !claims['sub'].start_with?("repo:#{repository}:") || claims['repository'] != repository
+      $stderr.puts "Invalid repository claim: expected=#{repository.inspect}, actual=#{JSON.pretty_generate(claims)}"
+      return false
     end
+
+    if claims['runner_environment'] != 'github-hosted'
+      $stderr.puts "Invalid runner_environment claim: expected=github-hosted, actual=#{JSON.pretty_generate(claims)}"
+      return false
+    end
+
+    expected_claim_values.each_pair do |key, value|
+      if claims[key.to_s] != value
+        $stderr.puts "Invalid #{key} claim: expected=#{value.inspect}, actual=#{JSON.pretty_generate(claims)}"
+        return false
+      end
+    end
+
     true
   end
 end
