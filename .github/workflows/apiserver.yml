@@ -116,5 +116,7 @@ jobs:
 
       - name: Deploy
         run: >
-          curl -fsSLv -X POST -H "Authorization: Bearer $TOKEN"
+          curl -fL --no-progress-meter -X POST -H "Authorization: Bearer $TOKEN"
           https://apt.fullstaqruby.org/admin/upgrade_apiserver
+        env:
+          TOKEN: ${{ steps.get-id-token.outputs.id_token }}
