@@ -16,11 +16,11 @@ apt.{$DOMAIN_NAME} {
 		}
 	}
 	encode gzip
+	handle /admin/repo_query_time {
+		respond "{$REPO_QUERY_TIME}"
+	}
 	handle /admin/* {
 		reverse_proxy unix//run/apiserver/server.sock
-	}
-	handle /latest_version {
-		respond "{$APT_LATEST_VERSION}"
 	}
 	handle {
 		redir https://storage.googleapis.com/{$GCLOUD_BUCKET_PREFIX}-server-edition-apt-repo/versions/{$APT_LATEST_VERSION}/public{uri}
@@ -38,11 +38,11 @@ yum.{$DOMAIN_NAME} {
 		}
 	}
 	encode gzip
+	handle /admin/repo_query_time {
+		respond "{$REPO_QUERY_TIME}"
+	}
 	handle /admin/* {
 		reverse_proxy unix//run/apiserver/server.sock
-	}
-	handle /latest_version {
-		respond "{$YUM_LATEST_VERSION}"
 	}
 	handle {
 		redir https://storage.googleapis.com/{$GCLOUD_BUCKET_PREFIX}-server-edition-yum-repo/versions/{$YUM_LATEST_VERSION}/public{uri}

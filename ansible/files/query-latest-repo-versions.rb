@@ -6,6 +6,7 @@ def main
   open_io(ARGV[0]) do |io|
     query_repo_version('apt', io)
     query_repo_version('yum', io)
+    io.puts "REPO_QUERY_TIME=#{Time.now.to_f}"
   end
 end
 
