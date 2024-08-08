@@ -35,7 +35,7 @@ class App < Sinatra::Base
   end
 
   post '/admin/restart_web_server' do
-    authorize!('fullstaq-ruby/server-edition', environment: 'production')
+    authorize!('fullstaq-ruby/server-edition', environment: 'deploy')
 
     # Restart web server after 5 seconds so that this request's
     # response can reach the client.
