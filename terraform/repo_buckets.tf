@@ -12,10 +12,10 @@ resource "google_storage_bucket_iam_binding" "server-edition-apt-repo-public-vie
   members = ["allUsers"]
 }
 
-resource "google_storage_bucket_iam_binding" "server-edition-apt-repo-writable-by-server-edition-ci-bot" {
+resource "google_storage_bucket_iam_binding" "server-edition-apt-repo-writable-by-github-ci-deploy" {
   bucket  = google_storage_bucket.server-edition-apt-repo.self_link
   role    = "roles/storage.objectAdmin"
-  members = ["serviceAccount:${google_service_account.server-edition-ci-bot.email}"]
+  members = ["principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github-ci-deploy.name}/attribute.repository/fullstaq-ruby/server-edition"]
 }
 
 
@@ -33,8 +33,8 @@ resource "google_storage_bucket_iam_binding" "server-edition-yum-repo-public-vie
   members = ["allUsers"]
 }
 
-resource "google_storage_bucket_iam_binding" "server-edition-yum-repo-writable-by-server-edition-ci-bot" {
+resource "google_storage_bucket_iam_binding" "server-edition-yum-repo-writable-by-github-ci-deploy" {
   bucket  = google_storage_bucket.server-edition-yum-repo.self_link
   role    = "roles/storage.objectAdmin"
-  members = ["serviceAccount:${google_service_account.server-edition-ci-bot.email}"]
+  members = ["principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github-ci-deploy.name}/attribute.repository/fullstaq-ruby/server-edition"]
 }

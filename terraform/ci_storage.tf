@@ -2,6 +2,10 @@ data "azuread_service_principal" "server-edition-github-ci-test" {
   display_name = "Server Edition Github CI (test)"
 }
 
+data "azuread_service_principal" "server-edition-github-ci-deploy" {
+  display_name = "Server Edition Github CI (deploy)"
+}
+
 
 resource "azurerm_storage_account" "server-edition-ci" {
   name                     = "${var.storage_account_prefix}seredci1"
@@ -71,6 +75,12 @@ resource "azurerm_role_assignment" "server-edition-ci-artifacts-writable-by-gith
   principal_id         = data.azuread_service_principal.server-edition-github-ci-test.id
 }
 
+resource "azurerm_role_assignment" "server-edition-ci-artifacts-readable-by-github-ci-deploy" {
+  scope                = azurerm_storage_container.server-edition-ci-artifacts.resource_manager_id
+  role_definition_name = "Storage Blob Data Reader"
+  principal_id         = data.azuread_service_principal.server-edition-github-ci-deploy.id
+}
+
 
 resource "azurerm_storage_container" "server-edition-ci-cache" {
   name                  = "server-edition-ci-cache"
@@ -114,8 +124,8 @@ resource "google_storage_bucket_iam_binding" "server-edition-ci-artifacts-public
   members = ["allUsers"]
 }
 
-resource "google_storage_bucket_iam_binding" "server-edition-ci-artifacts-writable-by-github-ci" {
+resource "google_storage_bucket_iam_binding" "server-edition-ci-artifacts-writable-by-github-ci-test" {
   bucket  = google_storage_bucket.server-edition-ci-artifacts.self_link
   role    = "roles/storage.objectAdmin"
-  members = ["principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github.name}/attribute.repository/fullstaq-ruby/server-edition"]
+  members = ["principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github-ci-test.name}/attribute.repository/fullstaq-ruby/server-edition"]
 }
