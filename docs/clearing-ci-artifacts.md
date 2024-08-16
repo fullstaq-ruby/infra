@@ -8,12 +8,12 @@ Developers request the clearing of CI artifacts via the issue tracker, using [th
 
 Here's how you should process such a support request:
 
- 1. Go to the Google Cloud Storage bucket named [fullstaq-ruby-server-edition-ci-artifacts](https://console.cloud.google.com/storage/browser/fullstaq-ruby-server-edition-ci-artifacts?project=fullstaq-ruby) in the `fullstaq-ruby` project.
- 2. Delete the folder whose name equals the reported CI run number.
- 3. Close the issue with the following canned response:
+1.  Go to the Google Cloud Storage bucket named [fullstaq-ruby-server-edition-ci-artifacts](https://console.cloud.google.com/storage/browser/fullstaq-ruby-server-edition-ci-artifacts?project=fullstaq-ruby) in the `fullstaq-ruby` project.
+2.  Delete the folder whose name equals the reported CI run number.
+3.  Close the issue with the following canned response:
 
     > The artifacts have been cleared. Please re-run the CI job whenever convenient.
 
 ## See also
 
- * [Troubleshooting corrupt CI/CD artifacts — Server Edition development handbook](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/blob/main/dev-handbook/troubleshooting-corrupt-ci-cd-artifacts.md)
+- [Troubleshooting corrupt CI/CD artifacts — Server Edition development handbook](https://github.com/fullstaq-ruby/server-edition/blob/main/dev-handbook/troubleshooting-corrupt-ci-cd-artifacts.md)

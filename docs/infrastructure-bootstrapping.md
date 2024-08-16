@@ -124,102 +124,35 @@ ansible-playbook -i hosts.ini -v main.yml
 cd ..
 ```
 
-## Step 11: Populate Github Actions secrets
+## Step 11: Populate Github Actions secrets and variables
 
-Terraform has created two Google Cloud service accounts and one Azure storage account. Their corresponding private keys and connection string must be installed as Github Actions secrets in the corresponding Github projects.
+In the [fullstaq-ruby/server-edition](https://github.com/fullstaq-ruby/server-edition/settings/secrets) repo, create the following environments:
 
-- _Infrastructure CI Bot_: used by the Infrastructure team's CI/CD systems.
+- test
+- deploy
 
-  Fetch the private key (in JSON format, base64-encoded) from the Terraform state and decode it:
+Create these environment-specific secrets:
+
+- `AZURE_CI2_STORAGE_CONNECTION_STRING` ('test' environment):
+
+  Fetch the value from the Terraform state:
 
   ```bash
-  pushd terraform && terraform show -json | jq -r '.values.root_module.resources[] | select(.name == "infra-ci-bot-sa-key") | .values.private_key' | base64 --decode && popd
+  pushd terraform >/dev/null && terraform show -json | jq -r '.values.root_module.resources[] | select(.address == "azurerm_storage_account.server-edition-ci") | .values.primary_blob_connection_string'; popd >/dev/null
   ```
 
-  In the [fullstaq-ruby/infra](https://github.com/fullstaq-ruby/infra/settings/secrets) repo, paste this value into a secret named `GCLOUD_KEY`.
+Create these repository variables:
 
-- _Server Edition CI Bot_: used by Server Edition's developers' CI/CD systems to publish artifacts to the `fullstaq-ruby` Google Cloud project, and to cache to the `fsruby2seredci1` Azure storage account.
+- `AZURE_SUBSCRIPTION_ID`: see corresponding variable in terraform/variables.tf
+- `AZURE_TENANT_ID`: see corresponding variable in terraform/variables.tf
+- `GCLOUD_PROJECT_ID`: see corresponding variable in terraform/variables.tf
+- `GCLOUD_PROJECT_NUM`: lookup the project number in Google Cloud.
+- `CI_ARTIFACTS_BUCKET`: fetch using `pushd terraform >/dev/null && terraform show -json | jq -r '.values.root_module.resources[] | select(.address == "google_storage_bucket.server-edition-ci-artifacts") | .values.name'; popd >/dev/null`
 
-  - Fetch the Google Cloud service account private key (in JSON format, base64-encoded) from the Terraform state:
+Create these environment-specific variables:
 
-    ```bash
-    pushd terraform && terraform show -json | jq -r '.values.root_module.resources[] | select(.name == "server-edition-ci-bot-sa-key") | .values.private_key' && popd
-    ```
-
-    In the [fullstaq-ruby/server-edition](https://github.com/fullstaq-ruby/server-edition/settings/secrets) repo, paste this value into a secret named `GCLOUD_KEY`.
-
-  - Fetch the Azure storage account connection string from the Terraform state:
-
-    ```bash
-    pushd terraform && terraform show -json | jq -r '.values.root_module.resources[] | select(.address == "azurerm_storage_account.server-edition-ci") | .values.primary_blob_connection_string' && popd
-    ```
-
-    In the [fullstaq-ruby/server-edition](https://github.com/fullstaq-ruby/server-edition/settings/secrets) repo, paste this value into a secret named `AZURE_CI1_STORAGE_CONNECTION_STRING`.
-
-## Step 12: Register a Github bot account
-
-### Create an email inbox for the Github bot account
-
-In the Fullstaq G Suite admin console, create a new group:
-
-- Name: Fullstaq Ruby CI bot
-- Email: fullstaq-ruby-ci-bot@fullstaq.com
-
-Go to its [Advanced Settings](https://groups.google.com/a/fullstaq.com/g/fullstaq-ruby-ci-bot/settings) and ensure the following settings:
-
-- General:
-  - Who can see this group: Organisation members
-  - Who can join this group: Invited users only
-  - Who can view conversations: Group managers
-  - Who can post: Anyone on the web
-  - Who can view members: Group managers
-- Member privacy:
-  - Identification required for new members: Display profile name only
-  - Who can view the member's email addresses: Group managers
-- Posting policies:
-  - Conversation history: on
-  - Who can moderate content: Group managers
-  - Who can moderate metadata: Group managers
-  - Who can post as the group: Group owners
-  - Message moderation: No moderation
-  - New member restrictions: No posting restriction for new members
-- Member moderation
-  - Who can manage members: Group managers
-  - Permission to modify custom roles: Group owners
-
-### Register the Github bot account
-
-Account details:
-
-- Username: fullstaq-ruby-ci-bot
-- Email: fullstaq-ruby-ci-bot@fullstaq.com
-
-Store the password in Secret Manager:
-
-1.  Go to the `fullstaq-ruby-hisec` Google Cloud project.
-2.  Go to Security ➜ Secret Manager.
-3.  Create a secret with the name `fullstaq-ruby-ci-bot-password` and insert the password.
-
-### Personal access token
-
-Create a personal access token:
-
-- Note: Server Edition CI
-- Scope: repo
-
-Store this token in Secret Manager:
-
-1.  Go to the `fullstaq-ruby-hisec` Google Cloud project.
-2.  Go to Security ➜ Secret Manager.
-3.  Create a secret with the name `fullstaq-ruby-ci-bot-server-edition-pat` and insert the personal access token.
-
-### Install Github Actions secret
-
-In the [fullstaq-ruby-server-edition](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/settings/secrets) repo, create a Github Actions secret named `WORKFLOW_DISPATCH_TOKEN`. Set it to the personal access token.
-
-### Grant access to key repositories
-
-In the [fullstaq-ruby-server-edition](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/settings/access) repo, add fullstaq-ruby-ci-bot as a collaborator. Grant the "Write" access.
+- `AZURE_CLIENT_ID` ('test' environment): fetch using `pushd terraform-hisec >/dev/null && terraform show -json | jq -r '.values.root_module.resources[] | select(.address == "azuread_application.server-edition-github-ci-test") | .values.application_id'; popd >/dev/null`
+- `AZURE_CLIENT_ID` ('deploy' environment): fetch using `pushd terraform-hisec >/dev/null && terraform show -json | jq -r '.values.root_module.resources[] | select(.address == "azuread_application.server-edition-github-ci-deploy") | .values.application_id'; popd >/dev/null`
 
 ## Step 13: Onboard everybody
 

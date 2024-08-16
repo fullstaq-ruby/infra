@@ -35,7 +35,7 @@ variable "gcloud_storage_location" {
 
 variable "azure_location_preferred_by_github_runners" {
   type = string
-  # https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/issues/86#issuecomment-1032643774
+  # https://github.com/fullstaq-ruby/server-edition/issues/86#issuecomment-1032643774
   # https://docs.github.com/en/actions/reference/virtual-environments-for-github-hosted-runners#ip-addresses-of-github-hosted-runners
   # https://azure.microsoft.com/en-us/global-infrastructure/geographies/#geographies
   default = "West US 2"
@@ -43,7 +43,7 @@ variable "azure_location_preferred_by_github_runners" {
 
 variable "gcloud_storage_location_preferred_by_github_runners" {
   type = string
-  # https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/issues/86#issuecomment-1032643774
+  # https://github.com/fullstaq-ruby/server-edition/issues/86#issuecomment-1032643774
   # https://docs.github.com/en/actions/reference/virtual-environments-for-github-hosted-runners#ip-addresses-of-github-hosted-runners
   # https://azure.microsoft.com/en-us/global-infrastructure/geographies/#geographies
   default = "US-EAST4"

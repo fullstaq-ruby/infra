@@ -2,14 +2,14 @@
 name: Clear CI artifacts
 about: Request clearing of corrupt CI artifacts
 title: Clear corrupt CI artifacts for server-edition/<CI RUN NUMBER>
-labels: ''
-assignees: ''
+labels: ""
+assignees: ""
 ---
 
 Please clear the CI artifacts for the following CI run:
 
- - Project: server-edition
- - CI run number: (please fill in; don't forget to update the title too)
+- Project: server-edition
+- CI run number: (please fill in; don't forget to update the title too)
 
 <!--
 You can find out the CI run number as follows:
@@ -25,4 +25,4 @@ You can find out the CI run number as follows:
 
 ## Instructions for infra team members
 
-See [this guide](https://github.com/fullstaq-labs/fullstaq-ruby-infra/blob/main/docs/clearing-ci-artifacts.md).
+See [this guide](https://github.com/fullstaq-ruby/infra/blob/main/docs/clearing-ci-artifacts.md).
