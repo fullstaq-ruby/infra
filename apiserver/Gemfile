@@ -8,4 +8,5 @@ gem "jwt"
 
 group :ci, optional: true do
   gem "rufo"
+  gem "debendencies"
 end

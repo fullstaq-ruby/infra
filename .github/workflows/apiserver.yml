@@ -57,6 +57,13 @@ jobs:
           BUNDLE_PATH: vendor/bundle
           BUNDLE_WITH: ci
 
+      - name: Infer library dependencies
+        run: bundle exec debendencies . -o dpkg-dependencies.txt --tee
+        working-directory: apiserver
+        env:
+          BUNDLE_PATH: vendor/bundle
+          BUNDLE_WITH: ci
+
       - name: Create tarball
         run: >
           tar
