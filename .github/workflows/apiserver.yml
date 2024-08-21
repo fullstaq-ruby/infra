@@ -47,7 +47,14 @@ jobs:
           BUNDLE_PATH: vendor/bundle
           BUNDLE_JOBS: 4
           BUNDLE_RETRY: 3
+          BUNDLE_WITH: ci
           BUNDLE_CLEAN: "true"
+
+      - name: Check code formatting with Rufo
+        run: bundle exec rufo --check .
+        working-directory: apiserver
+        env:
+          BUNDLE_WITH: ci
 
       - name: Create tarball
         run: >
