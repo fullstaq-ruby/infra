@@ -8,7 +8,6 @@ Type=oneshot
 User=apiserver-deployer
 Group=apiserver-deployer
 PrivateTmp=true
-ProtectSystem=full
 ReadWritePaths=/opt/apiserver/versions
 ExecStart=/usr/local/bin/apiserver-deployer
 RemainAfterExit=yes

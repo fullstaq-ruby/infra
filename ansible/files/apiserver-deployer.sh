@@ -37,10 +37,7 @@ else
     mkdir "${TARGET_DIR}.tmp"
     tar --use-compress-program=unzstd -xf "/tmp/$ASSET_NAME" -C "${TARGET_DIR}.tmp"
     DPKG_DEPENDENCIES=$(cat "${TARGET_DIR}.tmp/dpkg-dependencies.txt")
-    if [[ -n "$DPKG_DEPENDENCIES" ]]; then
-        echo "Installing dependencies: $DPKG_DEPENDENCIES"
-        apt satisfy -y --no-install-recommends --no-install-suggests "$DPKG_DEPENDENCIES"
-    fi
+    sudo apt-satisfy-dependency-string.sh "$DPKG_DEPENDENCIES"
     rm "/tmp/$ASSET_NAME"
     mv "${TARGET_DIR}.tmp" "$TARGET_DIR"
 

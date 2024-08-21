@@ -9,6 +9,22 @@
     group: apiserver-deployer
     uid: 954
 
+- name: Install apt-satisfy-dependency-string.sh
+  copy:
+    src: apt-satisfy-dependency-string.sh
+    dest: /usr/local/bin/apt-satisfy-dependency-string.sh
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Install apiserver-deployer sudoers entry
+  copy:
+    src: apiserver-deployer-sudoers
+    dest: /etc/sudoers.d/apiserver-deployer
+    owner: root
+    group: root
+    mode: 0440
+
 - name: Create apiserver deployment directory
   file:
     path: /opt/apiserver/versions

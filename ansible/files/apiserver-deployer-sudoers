@@ -1,0 +1,1 @@
+apiserver-deployer ALL=(ALL) NOPASSWD: /usr/local/bin/apt-satisfy-dependency-string.sh *
