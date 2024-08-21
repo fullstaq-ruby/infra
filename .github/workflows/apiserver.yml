@@ -54,6 +54,7 @@ jobs:
         run: bundle exec rufo --check .
         working-directory: apiserver
         env:
+          BUNDLE_PATH: vendor/bundle
           BUNDLE_WITH: ci
 
       - name: Create tarball
