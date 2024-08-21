@@ -57,7 +57,7 @@ jobs:
           BUNDLE_PATH: vendor/bundle
           BUNDLE_WITH: ci
 
-      - name: Infer library dependencies
+      - name: Detect library dependencies
         run: bundle exec debendencies . -o dpkg-dependencies.txt --tee
         working-directory: apiserver
         env:
