@@ -18,6 +18,11 @@ variable "dns_name" {
   default = "fullstaqruby.org"
 }
 
+variable "entra_id_domain_validation_value" {
+  type    = string
+  default = "MS=ms10083350"
+}
+
 variable "storage_account_prefix" {
   type    = string
   default = "fsruby2"

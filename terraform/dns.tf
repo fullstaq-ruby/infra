@@ -38,13 +38,16 @@ resource "azurerm_dns_cname_record" "website_gh_pages_www" {
   ttl                 = 86400
 }
 
-resource "azurerm_dns_txt_record" "website_google_verification" {
+resource "azurerm_dns_txt_record" "website_verification" {
   name                = "@"
   zone_name           = azurerm_dns_zone.website.name
   resource_group_name = azurerm_dns_zone.website.resource_group_name
   ttl                 = 86400
   record {
     value = "google-site-verification=usrLESAOrudLzVFrFcTxPGqMikectAoaWT8aJe0cLFc"
+  }
+  record {
+    value = var.entra_id_domain_validation_value
   }
 }
 

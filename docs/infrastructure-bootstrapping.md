@@ -114,7 +114,25 @@ cd ..
 
 Register the domain `fullstaqruby.org`. Configure it to use the Azure DNS zone.
 
-## Step 10: Run initial Ansible
+## Step 10: Setup Entra ID custom domain
+
+1. In Entra ID, go to "Manage" -> "Custom domain names".
+2. Add `fullstaqruby.org`. You will see a domain verification value under "Destination or points to address". Copy that.
+3. Edit `terraform/variables.tf` and fill in the `entra_id_domain_validation_value`.
+4. Run Terraform:
+
+   ```bash
+   cd terraform
+   terraform init
+   terraform apply
+   cd ..
+   ```
+
+5. Finish verifying the Entra ID `fullstaqruby.org` domain, then set it as the primary domain.
+6. Edit all Entra ID users' properties and switch them to the new domain (use the dropdown under "User principal name").
+7. Delete the old Entra ID domain.
+
+## Step 11: Run initial Ansible
 
 Make sure the Azure CLI is logged in, then:
 
@@ -124,7 +142,7 @@ ansible-playbook -i hosts.ini -v main.yml
 cd ..
 ```
 
-## Step 11: Populate Github Actions secrets and variables
+## Step 12: Populate Github Actions secrets and variables
 
 In the [fullstaq-ruby/server-edition](https://github.com/fullstaq-ruby/server-edition/settings/secrets) repo, create the following environments:
 
