@@ -54,5 +54,6 @@ variable "infra_maintainers_azure_group_members" {
   type = list(string)
   default = [
     "2f1efb75-a4a9-4b3c-aec5-a40b51fbfe86", # Hongli Lai infra-maintainer account
+    "da08d889-fff7-4a0a-b026-de7ca6f65089", # Max Erkin
   ]
 }
