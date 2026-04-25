@@ -48,3 +48,35 @@ yum.{$DOMAIN_NAME} {
 		redir https://storage.googleapis.com/{$GCLOUD_BUCKET_PREFIX}-server-edition-yum-repo/versions/{$YUM_LATEST_VERSION}/public{uri}
 	}
 }
+
+apt-archive.{$DOMAIN_NAME} {
+	tls {
+		dns azure {
+			tenant_id {$AZURE_TENANT_ID}
+			subscription_id {$AZURE_SUBSCRIPTION_ID}
+			resource_group_name fullstaq-ruby-infra-maintainers
+			client_id {$AZURE_DNS_UPDATER_CLIENT_ID}
+			client_secret {$AZURE_DNS_UPDATER_CLIENT_SECRET}
+		}
+	}
+	encode gzip
+	handle {
+		redir https://storage.googleapis.com/{$GCLOUD_BUCKET_PREFIX}-server-edition-apt-repo-archive/versions/{$APT_ARCHIVE_LATEST_VERSION}/public{uri}
+	}
+}
+
+yum-archive.{$DOMAIN_NAME} {
+	tls {
+		dns azure {
+			tenant_id {$AZURE_TENANT_ID}
+			subscription_id {$AZURE_SUBSCRIPTION_ID}
+			resource_group_name fullstaq-ruby-infra-maintainers
+			client_id {$AZURE_DNS_UPDATER_CLIENT_ID}
+			client_secret {$AZURE_DNS_UPDATER_CLIENT_SECRET}
+		}
+	}
+	encode gzip
+	handle {
+		redir https://storage.googleapis.com/{$GCLOUD_BUCKET_PREFIX}-server-edition-yum-repo-archive/versions/{$YUM_ARCHIVE_LATEST_VERSION}/public{uri}
+	}
+}
