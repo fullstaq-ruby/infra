@@ -25,8 +25,12 @@ def query_repo_version(type, output, suffix: '')
   end
 
   if resp.code.to_i / 100 != 2
-    if suffix != ''
-      STDERR.puts "Warning: #{type} repo not found (#{resp.code}), skipping"
+    # Archive bucket may legitimately not exist before the first migration runs.
+    # Only treat 404 as the "not yet populated" case; any other non-2xx
+    # (auth, 5xx, redirects) is a real failure and must surface — silently
+    # falling back to version 0 would point clients at /versions/0/... 404s.
+    if suffix != '' && resp.code.to_i == 404
+      STDERR.puts "Warning: #{type} repo not found (404), skipping"
       output.puts "#{type.upcase.gsub('-', '_')}_LATEST_VERSION=0"
       return
     end
