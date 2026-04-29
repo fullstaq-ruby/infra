@@ -1,6 +1,6 @@
 # Infrastructure bootstrapping
 
-We try to codify infrastructure as much as possible using Terraform and Kubernetes YAML. However:
+We try to codify infrastructure as much as possible using Terraform and Ansible. However:
 
 - Not everything _can_ be automated. For example, we need to setup Azure Blob Storage for storing Terraform state, before we can use Terraform.
 - Not everything _should_ be automated. For example, the `fullstaq-ruby-hisec` project contains such sensitive data, that giving access to CI/CD systems would pose a security risk.

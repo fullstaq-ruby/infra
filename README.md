@@ -16,7 +16,6 @@ Concepts:
 Tasks:
 
  * [Deployment guide](docs/deploy.md)
- * [Editing diagrams](docs/editing-diagrams.md)
 
 Organizational (for team members):
 

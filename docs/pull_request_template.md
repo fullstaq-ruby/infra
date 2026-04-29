@@ -28,8 +28,7 @@ Check a box by filling in 'x', like so...
 -->
 
  - [ ] Documentation updated
- - [ ] Infrastructure overview diagram updated
-   <!-- see docs/editing-diagrams.md to learn how to edit the diagram -->
+ - [ ] Infrastructure overview diagram updated (Mermaid block in `docs/infrastructure-overview.md`)
  - [ ] The following content/files are kept in sync with each other:
    + The Terraform version specified in `**/providers.tf`, `.github/workflows/code-reviews.yml` and `docs/required-devtools.md`
    + The list of responsibilities specified in `.github/ISSUE_TEMPLATE/apply_join_team.md` and `docs/responsibilities-expectations.md`
