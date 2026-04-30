@@ -1,0 +1,43 @@
+- name: Create Lima VM
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Check if instance already exists
+      ansible.builtin.command: limactl list --format '{{ "{{.Name}}" }}' ansible-molecule
+      register: limactl_list
+      changed_when: false
+      failed_when: false
+
+    - name: Start Lima instance
+      ansible.builtin.command: >
+        limactl start --tty=false --name=ansible-molecule
+        {{ molecule_scenario_directory }}/lima.yaml
+      when: "'ansible-molecule' not in limactl_list.stdout"
+      changed_when: true
+
+    - name: Get SSH config from Lima
+      ansible.builtin.command: limactl show-ssh --format=config ansible-molecule
+      register: lima_ssh_config
+      changed_when: false
+
+    - name: Write Lima SSH config to ephemeral dir
+      ansible.builtin.copy:
+        content: "{{ lima_ssh_config.stdout }}\n"
+        dest: "{{ molecule_ephemeral_directory }}/ssh_config"
+        mode: "0600"
+
+    - name: Update inventory with SSH config
+      ansible.builtin.copy:
+        dest: "{{ molecule_ephemeral_directory }}/inventory/hosts.yml"
+        mode: "0644"
+        content: |
+          all:
+            hosts:
+              ansible-molecule:
+                ansible_connection: ssh
+                ansible_host: lima-ansible-molecule
+                ansible_user: "{{ lookup('env', 'USER') }}"
+                ansible_ssh_common_args: "-F {{ molecule_ephemeral_directory }}/ssh_config"
+                ansible_become: true
+                ansible_python_interpreter: /usr/bin/python3

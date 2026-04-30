@@ -17,3 +17,4 @@
 - name: Install unattended-upgrades-prometheus-collector
   apt:
     deb: https://github.com/FooBarWidget/unattended-upgrades-prometheus-collector/releases/download/v1.0.0/unattended-upgrades-prometheus-collector_1.0.0_all.deb
+  when: not (molecule_test | default(false))

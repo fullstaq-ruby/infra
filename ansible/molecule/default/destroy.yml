@@ -1,0 +1,10 @@
+- name: Destroy Lima VM
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Stop and delete Lima instance
+      ansible.builtin.command: limactl delete --force ansible-molecule
+      register: result
+      changed_when: result.rc == 0
+      failed_when: false

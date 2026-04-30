@@ -1,0 +1,21 @@
+- name: Prepare guest
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Ensure python3 and sudo are present
+      ansible.builtin.raw: |
+        which python3 || (apt-get update && apt-get install -y python3 sudo)
+      changed_when: false
+
+    - name: Install packages prod expects but playbook does not declare
+      ansible.builtin.apt:
+        name:
+          - cron
+          - ufw
+          - lsb-release
+          - acl
+          - ruby-dev
+          - build-essential
+          - rsyslog
+        update_cache: true
+        cache_valid_time: 3600

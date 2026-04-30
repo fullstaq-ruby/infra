@@ -1,0 +1,18 @@
+images:
+  - location: "https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-arm64.qcow2"
+    arch: "aarch64"
+  - location: "https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-amd64.qcow2"
+    arch: "x86_64"
+cpus: 2
+memory: "2GiB"
+disk: "20GiB"
+ssh:
+  loadDotSSHPubKeys: true
+mounts: []
+provision:
+  - mode: system
+    script: |
+      #!/bin/sh
+      set -eux
+      apt-get update
+      apt-get install -y python3 sudo
