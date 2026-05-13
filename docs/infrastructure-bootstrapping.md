@@ -39,9 +39,19 @@ In Entra ID, go to "Manage" -> "User settings".
 - Guest user access restrictions: Guest user access is restricted to properties and memberships of their own directory objects (most restrictive).
 - Restrict access to Microsoft Entra admin center: no.
 
-In Entra ID, go to "Manage" -> "Enterprise applications" -> "Security" -> "Consent and permissions".
+Go to "Manage" -> "Enterprise applications" -> "Security" -> "Consent and permissions".
 
 - Select "Do not allow user consent".
+
+Go to "Manage" -> "External identities" -> "External collaboration settings".
+
+- Select "Only users assigned to specific admin roles can invite guest users".
+
+Go to "Manage" -> "Security" -> "Manage" -> "Authentication methods".
+
+- Enable "Passkey (FIDO2)".
+- Enable "Microsoft Authenticator". Use Synced Passkeys, edit the default profile, enable both Device-Bound and Synced types.
+- Enable "Email OTP".
 
 ## Step 3: Setup Azure Blob Storage Terraform state bucket
 
