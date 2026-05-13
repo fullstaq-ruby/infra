@@ -1,19 +1,44 @@
 # This workflow must be usable with third-party pull requests,
 # and thus may not make use of any secrets.
+#
+# Security checklists:
+# https://aquilax.ai/blog/github-actions-security-hardening
+# https://www.wiz.io/blog/github-actions-security-guide
 
-name: Code reviews
+name: Test
 
 on:
   workflow_dispatch: {}
   push:
     paths-ignore:
       - "**.md"
-      - .github/workflows/apiserver.yml
-      - apiserver/**
+      - .github/workflows/apiserver-*.yml
+  pull_request:
+    types:
+      - opened
+      - synchronize
+    paths-ignore:
+      - "**.md"
+      - .github/workflows/apiserver-*.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
 
 jobs:
-  check:
+  test:
     runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    # Trigger only on push (internal branches) or on PRs from forks.
+    # Avoids duplicate runs on PRs from internal branches.
+    if: >
+      (github.event_name != 'pull_request' && github.event_name != 'pull_request_target')
+      || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+    env:
+      BUNDLE_GEMFILE: ${{ github.workspace }}/apiserver/Gemfile
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -49,3 +74,17 @@ jobs:
       - name: Check formatting of terraform-hisec/
         run: terraform fmt -check -diff -recursive
         working-directory: terraform-hisec
+
+      - name: Install Ansible
+        run: sudo apt update && sudo apt install -y ansible
+      - name: Check Ansible playbook syntax
+        run: ansible-playbook -i hosts.ini --syntax-check main.yml
+        working-directory: ansible
+
+      - uses: ruby/setup-ruby@6aaa311d81eba98ae12eaffbcb63296ace0efcde # v1.307.0
+        with:
+          ruby-version: "3.2"
+          bundler-cache: true
+      - name: Check code formatting with Rufo
+        run: bundle exec rufo --check .
+        working-directory: apiserver

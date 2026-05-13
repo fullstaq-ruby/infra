@@ -14,4 +14,4 @@ curl -v -H "Authorization: Bearer $(gcloud auth print-identity-token)" https://a
 
 ## Continuous deployment
 
-New API server code changes, when pushed to master, are automatically deployed by the Infrastructure project's CI.
+New API server code changes, when pushed to main, are automatically deployed by the Infrastructure project's CI.
