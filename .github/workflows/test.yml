@@ -29,7 +29,7 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
 
 jobs:
-  test:
+  test-terraform:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     # Trigger only on push (internal branches) or on PRs from forks.
@@ -37,8 +37,6 @@ jobs:
     if: >
       (github.event_name != 'pull_request' && github.event_name != 'pull_request_target')
       || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
-    env:
-      BUNDLE_GEMFILE: ${{ github.workspace }}/apiserver/Gemfile
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -75,16 +73,45 @@ jobs:
         run: terraform fmt -check -diff -recursive
         working-directory: terraform-hisec
 
+  test-ansible:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    # Trigger only on push (internal branches) or on PRs from forks.
+    # Avoids duplicate runs on PRs from internal branches.
+    if: >
+      (github.event_name != 'pull_request' && github.event_name != 'pull_request_target')
+      || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
       - name: Install Ansible
         run: sudo apt update && sudo apt install -y ansible
       - name: Check Ansible playbook syntax
         run: ansible-playbook -i hosts.ini --syntax-check main.yml
         working-directory: ansible
 
+  test-apiserver:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    # Trigger only on push (internal branches) or on PRs from forks.
+    # Avoids duplicate runs on PRs from internal branches.
+    if: >
+      (github.event_name != 'pull_request' && github.event_name != 'pull_request_target')
+      || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+    env:
+      BUNDLE_PATH: vendor/bundle
+      BUNDLE_WITH: ci
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
       - uses: ruby/setup-ruby@6aaa311d81eba98ae12eaffbcb63296ace0efcde # v1.307.0
         with:
           ruby-version: "3.2"
           bundler-cache: true
+        env:
+          BUNDLE_PATH: vendor/bundle
       - name: Check code formatting with Rufo
         run: bundle exec rufo --check .
         working-directory: apiserver
