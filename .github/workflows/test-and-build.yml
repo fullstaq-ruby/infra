@@ -92,6 +92,11 @@ jobs:
   audit-workflows:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
+    # Trigger only on push (internal branches) or on PRs from forks.
+    # Avoids duplicate runs on PRs from internal branches.
+    if: >
+      (github.event_name != 'pull_request' && github.event_name != 'pull_request_target')
+      || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     permissions:
       security-events: write
     steps:
@@ -155,7 +160,7 @@ jobs:
           elif [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
             before_sha="$GITHUB_EVENT_BEFORE"
             head_sha="$GITHUB_SHA"
-            if [[ "$before_sha" =~ ^0+$ ]]; then
+            if [[ "$before_sha" =~ ^0+$ ]] || ! git cat-file -e "$before_sha" 2>/dev/null; then
               changed_files="$(git diff-tree --no-commit-id --name-only -r "$head_sha")"
             else
               changed_files="$(git diff --name-only "$before_sha" "$head_sha")"
