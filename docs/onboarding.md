@@ -12,3 +12,4 @@ Onboarding is to be done by someone with the [Infra Owner role](roles.md).
   - [ ] Create a (regular) user.
   - [ ] Add object ID to `terraform-hisec/variables.tf` -> `infra_owners_azure_group_members` or `infra_maintainers_azure_group_members`. Apply Terraform.
 - [ ] Add member to the [Members](members.md) document.
+- [ ] Add member to the [Infra Owners team](https://github.com/orgs/fullstaq-ruby/teams/infra-owners) if applicable.

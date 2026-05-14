@@ -56,5 +56,6 @@ variable "infra_maintainers_azure_group_members" {
     "2f1efb75-a4a9-4b3c-aec5-a40b51fbfe86", # Hongli Lai infra-maintainer account
     "da08d889-fff7-4a0a-b026-de7ca6f65089", # Max Erkin
     "76c01f0d-abd4-40a4-8b28-e68342d7055f", # Britt Treece
+    "3dba77b1-f489-4811-b955-138258ad5f73", # Noah Iniguez
   ]
 }

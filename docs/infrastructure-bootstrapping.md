@@ -103,6 +103,10 @@ Create the following Github repositories:
 - `fullstaq-ruby/infra`
 - `fullstaq-ruby/website`
 
+In the organization:
+
+- Create an "Infra Owners" team with the right people.
+
 ## Step 7: Spin up a VPS
 
 1. Spin up an Ubuntu >= 24.04 VPS somewhere, for example at Hetzner.
