@@ -111,7 +111,8 @@ jobs:
           ruby-version: "3.2"
           bundler-cache: true
         env:
-          BUNDLE_PATH: vendor/bundle
+          BUNDLE_GEMFILE: apiserver/Gemfile
+          BUNDLE_PATH: apiserver/vendor/bundle
       - name: Check code formatting with Rufo
         run: bundle exec rufo --check .
         working-directory: apiserver
