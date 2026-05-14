@@ -2,17 +2,18 @@
 # https://aquilax.ai/blog/github-actions-security-hardening
 # https://www.wiz.io/blog/github-actions-security-guide
 
-name: API Server deploy
+name: Deploy
 
 on:
   workflow_dispatch:
     inputs:
       run_id:
-        description: "API Server build workflow run ID to deploy"
+        description: "Test and build workflow run ID to deploy"
         required: true
+  # zizmor: ignore[dangerous-triggers] Only triggered via default branch
   workflow_run:
     workflows:
-      - API Server build
+      - Test and build
     branches:
       - main
     types:
@@ -21,28 +22,35 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+
 jobs:
-  deploy:
-    runs-on: ubuntu-slim
-    timeout-minutes: 15
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
     if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
-    environment: deploy
-    permissions:
-      contents: write
-      id-token: write
+    outputs:
+      build_run_id: ${{ steps.resolve-run-id.outputs.run_id }}
+      build_skipped: ${{ steps.validate-run-id.outputs.build_skipped }}
+      build_head_sha: ${{ steps.validate-run-id.outputs.build_head_sha }}
+      build_run_number: ${{ steps.validate-run-id.outputs.build_run_number }}
+      build_url: ${{ steps.validate-run-id.outputs.build_url }}
     steps:
       - name: Resolve run ID
         id: resolve-run-id
-        run: |
-          echo "run_id=${{ github.event_name == 'workflow_run' && github.event.workflow_run.id || github.event.inputs.run_id }}" >> "$GITHUB_OUTPUT"
+        run: echo "run_id=$RESULT" >> "$GITHUB_OUTPUT"
+        env:
+          RESULT: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.id || github.event.inputs.run_id }}
 
       - name: Validate run ID
         id: validate-run-id
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         env:
           RUN_ID: ${{ steps.resolve-run-id.outputs.run_id }}
-          EXPECTED_WORKFLOW_NAME: API Server build
+          EXPECTED_WORKFLOW_NAME: Test and build
           EXPECTED_BRANCH: main
+          EXPECTED_JOB_NAME: apiserver-build
         with:
           script: |
             const runId = Number(process.env.RUN_ID);
@@ -88,19 +96,58 @@ jobs:
               return;
             }
 
+            const jobs = await github.paginate(github.rest.actions.listJobsForWorkflowRun, {
+              owner,
+              repo,
+              run_id: runId,
+              per_page: 100,
+            });
+
+            const buildJob = jobs.find((job) => job.name === process.env.EXPECTED_JOB_NAME);
+            if (!buildJob) {
+              core.setFailed(
+                `run_id ${runId} does not contain expected job '${process.env.EXPECTED_JOB_NAME}'`
+              );
+              return;
+            }
+
+            if (buildJob.conclusion === 'skipped') {
+              core.setOutput('build_skipped', 'true');
+              core.info(`job '${process.env.EXPECTED_JOB_NAME}' in run_id ${runId} was skipped; nothing to deploy`);
+              return;
+            }
+
+            if (buildJob.conclusion !== 'success') {
+              core.setFailed(
+                `job '${process.env.EXPECTED_JOB_NAME}' in run_id ${runId} has conclusion '${buildJob.conclusion}', expected 'success'`
+              );
+              return;
+            }
+
+            core.setOutput('build_skipped', 'false');
             core.setOutput('build_head_sha', run.head_sha);
             core.setOutput('build_run_number', String(run.run_number));
             core.setOutput('build_url', run.html_url);
 
+  deploy-apiserver:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    needs: validate
+    environment: deploy
+    if: needs.validate.outputs.build_skipped == 'false'
+    permissions:
+      contents: write
+      id-token: write
+    steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: true
-          ref: ${{ steps.validate-run-id.outputs.build_head_sha }}
+          ref: ${{ needs.validate.outputs.build_head_sha }}
 
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: apiserver
-          run-id: ${{ steps.resolve-run-id.outputs.run_id }}
+          run-id: ${{ needs.validate.outputs.build_run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create tag
@@ -117,10 +164,10 @@ jobs:
 
           git tag -f -a apiserver-"$GITHUB_RUN_NUMBER" -F tag-message.txt "$BUILD_HEAD_SHA"
         env:
-          BUILD_RUN_ID: ${{ steps.resolve-run-id.outputs.run_id }}
-          BUILD_RUN_NUMBER: ${{ steps.validate-run-id.outputs.build_run_number }}
-          BUILD_URL: ${{ steps.validate-run-id.outputs.build_url }}
-          BUILD_HEAD_SHA: ${{ steps.validate-run-id.outputs.build_head_sha }}
+          BUILD_RUN_ID: ${{ needs.validate.outputs.build_run_id }}
+          BUILD_RUN_NUMBER: ${{ needs.validate.outputs.build_run_number }}
+          BUILD_URL: ${{ needs.validate.outputs.build_url }}
+          BUILD_HEAD_SHA: ${{ needs.validate.outputs.build_head_sha }}
 
       - name: Push tag
         run: git push origin apiserver-"$GITHUB_RUN_NUMBER"
