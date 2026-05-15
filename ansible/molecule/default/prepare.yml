@@ -2,11 +2,6 @@
   hosts: all
   gather_facts: true
   tasks:
-    - name: Ensure python3 and sudo are present
-      ansible.builtin.raw: |
-        which python3 || (apt-get update && apt-get install -y python3 sudo)
-      changed_when: false
-
     - name: Install packages prod expects but playbook does not declare
       ansible.builtin.apt:
         name:
