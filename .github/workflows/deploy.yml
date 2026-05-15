@@ -162,7 +162,7 @@ jobs:
             echo "Build SHA: $BUILD_HEAD_SHA"
           } > tag-message.txt
 
-          git tag -f -a apiserver-"$GITHUB_RUN_NUMBER" -F tag-message.txt "$BUILD_HEAD_SHA"
+          git tag -a apiserver-"$GITHUB_RUN_NUMBER" -F tag-message.txt "$BUILD_HEAD_SHA"
         env:
           BUILD_RUN_ID: ${{ needs.validate.outputs.build_run_id }}
           BUILD_RUN_NUMBER: ${{ needs.validate.outputs.build_run_number }}
