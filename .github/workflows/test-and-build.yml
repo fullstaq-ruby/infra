@@ -220,6 +220,7 @@ jobs:
         with:
           path: apiserver/vendor/bundle
           key: ${{ runner.os }}-24.04-${{ runner.arch }}-gems-${{ hashFiles('apiserver/Gemfile.lock') }}
+          restore-keys: ${{ runner.os }}-24.04-${{ runner.arch }}-gems-
 
       - name: Install matching Bundler version
         run: sudo gem install bundler -v $(grep -A1 "BUNDLED WITH" Gemfile.lock | tail -n1) --no-document
