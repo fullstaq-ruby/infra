@@ -6,12 +6,15 @@ def main
   open_io(ARGV[0]) do |io|
     query_repo_version('apt', io)
     query_repo_version('yum', io)
+    query_repo_version('apt-archive', io, suffix: '-archive')
+    query_repo_version('yum-archive', io, suffix: '-archive')
     io.puts "REPO_QUERY_TIME=#{Time.now.to_f}"
   end
 end
 
-def query_repo_version(type, output)
-  uri = URI("https://storage.googleapis.com/#{require_env(:GCLOUD_BUCKET_PREFIX)}-server-edition-#{type}-repo/versions/latest_version.txt")
+def query_repo_version(type, output, suffix: '')
+  bucket_type = type.gsub('-archive', '')
+  uri = URI("https://storage.googleapis.com/#{require_env(:GCLOUD_BUCKET_PREFIX)}-server-edition-#{bucket_type}-repo#{suffix}/versions/latest_version.txt")
 
   STDERR.puts "Querying #{uri}..."
   req = Net::HTTP::Get.new(uri)
@@ -22,11 +25,21 @@ def query_repo_version(type, output)
   end
 
   if resp.code.to_i / 100 != 2
+    # Archive bucket may legitimately not exist before the first migration runs.
+    # Only treat 404 as the "not yet populated" case; any other non-2xx
+    # (auth, 5xx, redirects) is a real failure and must surface — silently
+    # falling back to version 0 would point clients at /versions/0/... 404s.
+    if suffix != '' && resp.code.to_i == 404
+      STDERR.puts "Warning: #{type} repo not found (404), skipping"
+      output.puts "#{type.upcase.gsub('-', '_')}_LATEST_VERSION=0"
+      return
+    end
     abort("Failed to query #{uri}: #{resp.code} #{resp.body}")
   end
 
+  env_key = type.upcase.gsub('-', '_')
   STDERR.puts "#{type} latest version: #{resp.body}"
-  output.puts "#{type.upcase}_LATEST_VERSION=#{resp.body}"
+  output.puts "#{env_key}_LATEST_VERSION=#{resp.body}"
 end
 
 def open_io(path)
