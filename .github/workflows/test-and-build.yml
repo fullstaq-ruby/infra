@@ -160,8 +160,24 @@ jobs:
           elif [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
             before_sha="$GITHUB_EVENT_BEFORE"
             head_sha="$GITHUB_SHA"
-            if [[ "$before_sha" =~ ^0+$ ]] || ! git cat-file -e "$before_sha" 2>/dev/null; then
-              changed_files="$(git diff-tree --no-commit-id --name-only -r "$head_sha")"
+            default_branch="$GITHUB_DEFAULT_BRANCH"
+            ref_name="$GITHUB_REF_NAME"
+
+            if [[ "$before_sha" =~ ^0+$ ]] || ! git cat-file -e "$before_sha^{commit}" 2>/dev/null; then
+              if [[ "$ref_name" == "$default_branch" ]]; then
+                echo "::warning::Push to default branch with invalid before-SHA; failing open."
+                echo 'changed=true' >> "$GITHUB_OUTPUT"
+                exit 0
+              fi
+
+              # Compare from merge-base with default branch to avoid missing changes on force-push.
+              if merge_base="$(git merge-base "$head_sha" "origin/$default_branch" 2>/dev/null)"; then
+                changed_files="$(git diff --name-only "$merge_base" "$head_sha")"
+              else
+                echo "::warning::Could not determine merge-base with default branch; failing open."
+                echo 'changed=true' >> "$GITHUB_OUTPUT"
+                exit 0
+              fi
             else
               changed_files="$(git diff --name-only "$before_sha" "$head_sha")"
             fi
@@ -182,6 +198,7 @@ jobs:
           GITHUB_PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
           GITHUB_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           GITHUB_EVENT_BEFORE: ${{ github.event.before }}
+          GITHUB_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
 
   apiserver-build:
     runs-on: ubuntu-24.04
