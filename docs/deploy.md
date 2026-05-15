@@ -56,20 +56,12 @@ This guide explains how to deploy infrastructure updates. This guide is not for 
         cd ..
         ~~~
 
- 4. Get the credentials for the Kubernetes cluster:
+ 4. Apply Ansible to the backend VM:
 
     ~~~bash
-    gcloud container clusters get-credentials fullstaq-ruby-autopilot --configuration fullstaq-ruby --region us-east4
+    cd ansible
+    ansible-playbook -i hosts.ini -v main.yml
+    cd ..
     ~~~
 
- 5. Set the default namespace:
-
-    ~~~bash
-    kubectl config set-context --current --namespace=fullstaq-ruby
-    ~~~
-
- 6. Apply the Kustomization:
-
-    ~~~bash
-    kubectl apply --context=gke_fullstaq-ruby_us-east4_fullstaq-ruby-autopilot -k ../kubernetes
-    ~~~
+> The API server itself is not deployed by this playbook. Code changes under `apiserver/` are released by the `.github/workflows/apiserver.yml` workflow, which packages a tarball, attaches it to a GitHub Release, and triggers `POST /admin/upgrade_apiserver` on the live host.
