@@ -3,17 +3,24 @@
   connection: local
   gather_facts: false
   tasks:
-    - name: Check if instance already exists
-      ansible.builtin.command: limactl list --format '{{ "{{.Name}}" }}' ansible-molecule
-      register: limactl_list
+    - name: Check Lima instance status
+      ansible.builtin.command: limactl list --format '{{ "{{.Status}}" }}' ansible-molecule
+      register: limactl_status
       changed_when: false
       failed_when: false
 
-    - name: Start Lima instance
+    - name: Create Lima instance
       ansible.builtin.command: >
         limactl start --tty=false --name=ansible-molecule
         {{ molecule_scenario_directory }}/lima.yaml
-      when: "'ansible-molecule' not in limactl_list.stdout"
+      when: limactl_status.stdout | trim == ''
+      changed_when: true
+
+    - name: Start existing Lima instance
+      ansible.builtin.command: limactl start --tty=false ansible-molecule
+      when:
+        - limactl_status.stdout | trim != ''
+        - limactl_status.stdout | trim != 'Running'
       changed_when: true
 
     - name: Get SSH config from Lima
