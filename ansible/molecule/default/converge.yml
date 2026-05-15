@@ -47,66 +47,71 @@
 
     - import_tasks: ../../tasks/apiserver.yml
 
-    - name: "[test] Check whether apiserver fixture is already staged"
+    - name: "[test] Stage apiserver service-contract fixture dir"
+      ansible.builtin.file:
+        path: /opt/apiserver/versions/fixture-1
+        state: directory
+        owner: apiserver-deployer
+        group: apiserver-deployer
+        mode: "0755"
+
+    - name: "[test] Copy fixture Gemfile"
+      ansible.builtin.copy:
+        src: molecule-test/apiserver-fixture/Gemfile
+        dest: /opt/apiserver/versions/fixture-1/Gemfile
+        owner: apiserver-deployer
+        group: apiserver-deployer
+        mode: "0644"
+      register: fixture_gemfile
+
+    - name: "[test] Copy fixture config.ru"
+      ansible.builtin.copy:
+        src: molecule-test/apiserver-fixture/config.ru
+        dest: /opt/apiserver/versions/fixture-1/config.ru
+        owner: apiserver-deployer
+        group: apiserver-deployer
+        mode: "0644"
+      register: fixture_configru
+
+    - name: "[test] Configure bundler path for fixture"
+      ansible.builtin.command:
+        cmd: bundle config set --local path vendor/bundle
+        chdir: /opt/apiserver/versions/fixture-1
+        creates: /opt/apiserver/versions/fixture-1/.bundle/config
+
+    - name: "[test] Check for fixture Gemfile.lock"
       ansible.builtin.stat:
-        path: /opt/apiserver/versions/latest
-      register: fixture_latest
+        path: /opt/apiserver/versions/fixture-1/Gemfile.lock
+      register: fixture_lock
 
-    - name: "[test] Stage apiserver service-contract fixture (first run only)"
-      when: not fixture_latest.stat.exists
-      block:
-        - name: "[test] Stage apiserver service-contract fixture dir"
-          ansible.builtin.file:
-            path: /opt/apiserver/versions/fixture-1
-            state: directory
-            owner: apiserver-deployer
-            group: apiserver-deployer
-            mode: "0755"
+    - name: "[test] Bundle install fixture deps as root"
+      ansible.builtin.command:
+        cmd: bundle install
+        chdir: /opt/apiserver/versions/fixture-1
+      register: fixture_bundle
+      when: >
+        fixture_gemfile.changed
+        or fixture_configru.changed
+        or not fixture_lock.stat.exists
+      changed_when: true
 
-        - name: "[test] Copy fixture Gemfile"
-          ansible.builtin.copy:
-            src: molecule-test/apiserver-fixture/Gemfile
-            dest: /opt/apiserver/versions/fixture-1/Gemfile
-            owner: apiserver-deployer
-            group: apiserver-deployer
-            mode: "0644"
+    - name: "[test] Chown fixture tree to apiserver-deployer"
+      ansible.builtin.file:
+        path: /opt/apiserver/versions/fixture-1
+        state: directory
+        recurse: true
+        owner: apiserver-deployer
+        group: apiserver-deployer
+      when: fixture_bundle.changed
 
-        - name: "[test] Copy fixture config.ru"
-          ansible.builtin.copy:
-            src: molecule-test/apiserver-fixture/config.ru
-            dest: /opt/apiserver/versions/fixture-1/config.ru
-            owner: apiserver-deployer
-            group: apiserver-deployer
-            mode: "0644"
-
-        - name: "[test] Configure bundler path for fixture"
-          ansible.builtin.command:
-            cmd: bundle config set --local path vendor/bundle
-            chdir: /opt/apiserver/versions/fixture-1
-          changed_when: true
-
-        - name: "[test] Bundle install fixture deps as root"
-          ansible.builtin.command:
-            cmd: bundle install
-            chdir: /opt/apiserver/versions/fixture-1
-            creates: /opt/apiserver/versions/fixture-1/Gemfile.lock
-
-        - name: "[test] Chown fixture tree to apiserver-deployer"
-          ansible.builtin.file:
-            path: /opt/apiserver/versions/fixture-1
-            state: directory
-            recurse: true
-            owner: apiserver-deployer
-            group: apiserver-deployer
-
-        - name: "[test] Activate fixture as latest"
-          ansible.builtin.file:
-            src: fixture-1
-            dest: /opt/apiserver/versions/latest
-            state: link
-            owner: apiserver-deployer
-            group: apiserver-deployer
-            force: true
+    - name: "[test] Activate fixture as latest"
+      ansible.builtin.file:
+        src: fixture-1
+        dest: /opt/apiserver/versions/latest
+        state: link
+        owner: apiserver-deployer
+        group: apiserver-deployer
+        force: true
 
   handlers:
     - import_tasks: ../../handlers/ssh.yml
