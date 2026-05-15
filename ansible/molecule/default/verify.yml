@@ -26,6 +26,14 @@
       ansible.builtin.command: caddy validate --config /etc/caddy/Caddyfile --envfile /etc/caddy/env
       changed_when: false
 
+    - name: Caddy proxies /admin/* to the apiserver socket
+      ansible.builtin.uri:
+        url: http://127.0.0.1:8080/admin/health
+        return_content: true
+        status_code: 200
+      register: admin_proxy
+      failed_when: admin_proxy.content != "ok"
+
     - name: AppArmor package is installed
       ansible.builtin.package_facts: {}
 
