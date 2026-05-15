@@ -3,8 +3,13 @@
   connection: local
   gather_facts: false
   tasks:
+    - name: Check if Lima instance exists
+      ansible.builtin.command: limactl list --format '{{ "{{.Name}}" }}' ansible-molecule
+      register: limactl_list
+      changed_when: false
+      failed_when: false
+
     - name: Stop and delete Lima instance
       ansible.builtin.command: limactl delete --force ansible-molecule
-      register: result
-      changed_when: result.rc == 0
-      failed_when: false
+      when: "'ansible-molecule' in limactl_list.stdout"
+      changed_when: true
