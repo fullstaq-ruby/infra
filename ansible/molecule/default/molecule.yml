@@ -1,0 +1,38 @@
+dependency:
+  name: galaxy
+driver:
+  name: default
+  options:
+    managed: false
+    login_cmd_template: "limactl shell {instance}"
+    ansible_connection_options:
+      ansible_connection: ssh
+platforms:
+  - name: ansible-molecule
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      forks: 5
+  inventory:
+    hosts:
+      all:
+        hosts:
+          ansible-molecule:
+            ansible_user: lima-ansible-molecule
+            ansible_host: 127.0.0.1
+            ansible_become: true
+            ansible_python_interpreter: /usr/bin/python3
+verifier:
+  name: ansible
+scenario:
+  test_sequence:
+    - dependency
+    - destroy
+    - syntax
+    - create
+    - prepare
+    - converge
+    - idempotence
+    - verify
+    - destroy

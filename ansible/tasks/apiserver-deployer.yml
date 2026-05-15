@@ -29,7 +29,6 @@
   file:
     path: /opt/apiserver/versions
     state: directory
-    recurse: true
     owner: apiserver-deployer
     group: apiserver-deployer
     mode: 0755
@@ -41,6 +40,7 @@
     owner: root
     group: root
     mode: 0755
+  when: not (molecule_test | default(false))
   notify: Restart apiserver-deployer
 
 - name: Install apiserver-deployer systemd unit

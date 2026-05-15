@@ -1,0 +1,61 @@
+- name: Verify
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Core services are active
+      ansible.builtin.command: systemctl is-active {{ item }}
+      loop:
+        - caddy
+        - prometheus
+        - fail2ban
+        - ssh
+        - apiserver
+      changed_when: false
+
+    - name: Apiserver socket exists
+      ansible.builtin.stat:
+        path: /run/apiserver/server.sock
+      register: apiserver_socket
+      failed_when: not apiserver_socket.stat.exists
+
+    - name: Apiserver-deployer one-shot is active (RemainAfterExit)
+      ansible.builtin.command: systemctl is-active apiserver-deployer
+      changed_when: false
+
+    - name: Caddy config validates
+      ansible.builtin.command: caddy validate --config /etc/caddy/Caddyfile --envfile /etc/caddy/env
+      changed_when: false
+
+    - name: Caddy proxies /admin/* to the apiserver socket
+      ansible.builtin.uri:
+        url: http://127.0.0.1:8080/admin/health
+        return_content: true
+        status_code: 200
+      register: admin_proxy
+      failed_when: admin_proxy.content != "ok"
+
+    - name: AppArmor package is installed
+      ansible.builtin.package_facts: {}
+
+    - name: Assert AppArmor is installed
+      ansible.builtin.assert:
+        that: "'apparmor' in ansible_facts.packages"
+
+    - name: UFW is active
+      ansible.builtin.command: ufw status verbose
+      register: ufw_status
+      changed_when: false
+      failed_when: "'Status: active' not in ufw_status.stdout"
+
+    - name: SSH config matches hardening expectations
+      ansible.builtin.command: sshd -T
+      register: sshd_config
+      changed_when: false
+
+    - name: Assert PermitRootLogin without-password
+      ansible.builtin.assert:
+        that: "'permitrootlogin without-password' in sshd_config.stdout"
+
+    - name: Unattended-upgrade dry-run succeeds
+      ansible.builtin.command: unattended-upgrade --dry-run
+      changed_when: false

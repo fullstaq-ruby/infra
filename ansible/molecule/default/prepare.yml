@@ -1,0 +1,16 @@
+- name: Prepare guest
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Install packages prod expects but playbook does not declare
+      ansible.builtin.apt:
+        name:
+          - cron
+          - ufw
+          - lsb-release
+          - acl
+          - ruby-dev
+          - build-essential
+          - rsyslog
+        update_cache: true
+        cache_valid_time: 3600
