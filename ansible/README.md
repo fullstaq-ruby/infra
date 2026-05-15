@@ -13,8 +13,11 @@ cloud credentials.
 
 ```
 brew install lima uv
-uv tool install --with ansible-core --with molecule-plugins --python 3.12 molecule
+uv tool install --with ansible-core==2.20.5 --with molecule-plugins==25.8.12 --python 3.12 molecule==26.4.0
 ```
+
+Versions match `requirements.txt`, which is the canonical pin source for this
+scenario. Bump both together when upgrading.
 
 `uv tool install` puts each tool in its own isolated venv. Molecule shells out
 to `ansible`, `ansible-playbook`, `ansible-config`, etc., so the entire tool
