@@ -64,6 +64,15 @@
         mode: "0644"
       register: fixture_gemfile
 
+    - name: "[test] Copy fixture Gemfile.lock"
+      ansible.builtin.copy:
+        src: molecule-test/apiserver-fixture/Gemfile.lock
+        dest: /opt/apiserver/versions/fixture-1/Gemfile.lock
+        owner: apiserver-deployer
+        group: apiserver-deployer
+        mode: "0644"
+      register: fixture_gemfile_lock
+
     - name: "[test] Copy fixture config.ru"
       ansible.builtin.copy:
         src: molecule-test/apiserver-fixture/config.ru
@@ -79,10 +88,10 @@
         chdir: /opt/apiserver/versions/fixture-1
         creates: /opt/apiserver/versions/fixture-1/.bundle/config
 
-    - name: "[test] Check for fixture Gemfile.lock"
+    - name: "[test] Check for fixture vendor/bundle"
       ansible.builtin.stat:
-        path: /opt/apiserver/versions/fixture-1/Gemfile.lock
-      register: fixture_lock
+        path: /opt/apiserver/versions/fixture-1/vendor/bundle
+      register: fixture_vendor
 
     - name: "[test] Bundle install fixture deps as root"
       ansible.builtin.command:
@@ -91,8 +100,9 @@
       register: fixture_bundle
       when: >
         fixture_gemfile.changed
+        or fixture_gemfile_lock.changed
         or fixture_configru.changed
-        or not fixture_lock.stat.exists
+        or not fixture_vendor.stat.exists
       changed_when: true
 
     - name: "[test] Chown fixture tree to apiserver-deployer"
