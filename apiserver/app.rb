@@ -18,16 +18,16 @@ class App < Sinatra::Base
     authorize!("fullstaq-ruby/infra", environment: "deploy")
 
     if !system("sudo", "systemctl", "restart", "apiserver-deployer")
-      $stderr.puts "Failed to upgrade API server: #{$?}"
+      log_error "Failed to upgrade API server: #{$?}"
     end
 
     # Restart apiserver after 5 seconds so that 'systemctl' itself
     # gets a chance to run instead of being immediately killed.
-    Thread.new do
-      $stderr.puts "Restarting API server in 5 seconds..."
+    new_thread do
+      log_info "Restarting API server in 5 seconds..."
       sleep 5
       if !system("sudo", "systemctl", "restart", "apiserver")
-        $stderr.puts "Failed to restart API server: #{$?}"
+        log_error "Failed to restart API server: #{$?}"
       end
     end
 
@@ -39,11 +39,11 @@ class App < Sinatra::Base
 
     # Restart web server after 5 seconds so that this request's
     # response can reach the client.
-    Thread.new do
-      $stderr.puts "Restarting web server in 5 seconds..."
+    new_thread do
+      log_info "Restarting web server in 5 seconds..."
       sleep 5
       if !system("sudo", "systemctl", "restart", "caddy")
-        $stderr.puts "Failed to restart web server: #{$?}"
+        log_error "Failed to restart web server: #{$?}"
       end
     end
 
@@ -94,22 +94,34 @@ class App < Sinatra::Base
 
   def valid_claims?(claims, repository, expected_claim_values)
     if !claims["sub"].start_with?("repo:#{repository}:") || claims["repository"] != repository
-      $stderr.puts "Invalid repository claim: expected=#{repository.inspect}, actual=#{JSON.pretty_generate(claims)}"
+      log_error "Invalid repository claim: expected=#{repository.inspect}, actual=#{JSON.pretty_generate(claims)}"
       return false
     end
 
     if claims["runner_environment"] != "github-hosted"
-      $stderr.puts "Invalid runner_environment claim: expected=github-hosted, actual=#{JSON.pretty_generate(claims)}"
+      log_error "Invalid runner_environment claim: expected=github-hosted, actual=#{JSON.pretty_generate(claims)}"
       return false
     end
 
     expected_claim_values.each_pair do |key, value|
       if claims[key.to_s] != value
-        $stderr.puts "Invalid #{key} claim: expected=#{value.inspect}, actual=#{JSON.pretty_generate(claims)}"
+        log_error "Invalid #{key} claim: expected=#{value.inspect}, actual=#{JSON.pretty_generate(claims)}"
         return false
       end
     end
 
     true
+  end
+
+  def new_thread(&block)
+    Thread.new(&block)
+  end
+
+  def log_error(message)
+    $stderr.puts message
+  end
+
+  def log_info(message)
+    $stdout.puts message
   end
 end

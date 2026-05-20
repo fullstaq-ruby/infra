@@ -7,6 +7,7 @@ gem "sinatra", "~> 4"
 gem "jwt"
 
 group :ci, optional: true do
+  gem "rspec"
   gem "rufo"
   gem "debendencies"
 end

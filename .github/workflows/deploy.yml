@@ -50,7 +50,7 @@ jobs:
           RUN_ID: ${{ steps.resolve-run-id.outputs.run_id }}
           EXPECTED_WORKFLOW_NAME: Test and build
           EXPECTED_BRANCH: main
-          EXPECTED_JOB_NAME: apiserver-build
+          EXPECTED_JOB_NAME: apiserver-test-and-build
         with:
           script: |
             const runId = Number(process.env.RUN_ID);
