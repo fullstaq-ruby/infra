@@ -131,6 +131,9 @@ jobs:
       - name: Check code formatting with Rufo
         run: bundle exec rufo --check .
         working-directory: apiserver
+      - name: Run tests
+        run: bundle exec rspec -f d
+        working-directory: apiserver
 
   detect-apiserver-changes:
     runs-on: ubuntu-24.04
@@ -200,7 +203,7 @@ jobs:
           GITHUB_EVENT_BEFORE: ${{ github.event.before }}
           GITHUB_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
 
-  apiserver-test-and-build:
+  apiserver-build:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     needs:
@@ -251,10 +254,6 @@ jobs:
           BUNDLE_JOBS: 4
           BUNDLE_RETRY: 3
           BUNDLE_CLEAN: "true"
-
-      - name: Run tests
-        run: bundle exec rspec -f d
-        working-directory: apiserver
 
       - name: Detect library dependencies
         run: bundle exec debendencies . -o dpkg-dependencies.txt --tee
