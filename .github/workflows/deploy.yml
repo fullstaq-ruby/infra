@@ -162,6 +162,8 @@ jobs:
             echo "Build SHA: $BUILD_HEAD_SHA"
           } > tag-message.txt
 
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git tag -a apiserver-"$GITHUB_RUN_NUMBER" -F tag-message.txt "$BUILD_HEAD_SHA"
         env:
           BUILD_RUN_ID: ${{ needs.validate.outputs.build_run_id }}
