@@ -1,0 +1,16 @@
+{
+	admin off
+	auto_https off
+	log {
+		format console
+	}
+}
+
+:8080 {
+	handle /admin/* {
+		reverse_proxy unix//run/apiserver/server.sock
+	}
+	handle {
+		respond "fullstaq-ruby molecule test"
+	}
+}

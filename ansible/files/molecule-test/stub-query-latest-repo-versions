@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Test stub for query-latest-repo-versions. Real script reads from GCS.
+# Writes static placeholder values into the file Caddy expects.
+set -eu
+OUT="${1:-/etc/caddy/env-repo-versions}"
+cat >"$OUT" <<EOF
+APT_LATEST_VERSION=stub-apt-1
+YUM_LATEST_VERSION=stub-yum-1
+REPO_QUERY_TIME=1970-01-01T00:00:00Z
+EOF

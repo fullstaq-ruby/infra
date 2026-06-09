@@ -1,6 +1,11 @@
 DOMAIN_NAME={{ domain_name }}
 AZURE_TENANT_ID={{ azure_tenant_id }}
 AZURE_SUBSCRIPTION_ID={{ azure_subscription_id }}
+{% if molecule_test | default(false) %}
+AZURE_DNS_UPDATER_CLIENT_ID=stub-client-id
+AZURE_DNS_UPDATER_CLIENT_SECRET=stub-client-secret
+{% else %}
 AZURE_DNS_UPDATER_CLIENT_ID={{ lookup('pipe', keyvault_get_dns_updater_client_id_command) }}
 AZURE_DNS_UPDATER_CLIENT_SECRET={{ lookup('pipe', keyvault_get_dns_updater_client_secret_command) }}
+{% endif %}
 GCLOUD_BUCKET_PREFIX={{ gcloud_bucket_prefix }}

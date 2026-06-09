@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Test stub for apiserver-deployer. Real script downloads tarballs from
+# GitHub releases. Test fixture is staged separately by Molecule converge.
+set -eu
+echo "[stub-apiserver-deployer] no-op (fixture staged by Molecule)"
+exit 0

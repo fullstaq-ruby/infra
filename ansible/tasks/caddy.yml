@@ -35,6 +35,7 @@
     owner: root
     group: root
     mode: 0755
+  when: not (molecule_test | default(false))
   notify: Restart Caddy
 
 - name: Create Caddy config dir
@@ -87,6 +88,7 @@
     owner: caddy
     group: caddy
     mode: 0644
+  when: not (molecule_test | default(false))
   notify: Restart Caddy
 
 - name: Create Caddy systemd service
