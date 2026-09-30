@@ -1,6 +1,6 @@
 # Infrastructure bootstrapping
 
-We try to codify infrastructure as much as possible using Terraform and Kubernetes YAML. However:
+We try to codify infrastructure as much as possible using Terraform and Ansible. However:
 
 - Not everything _can_ be automated. For example, we need to setup Azure Blob Storage for storing Terraform state, before we can use Terraform.
 - Not everything _should_ be automated. For example, the `fullstaq-ruby-hisec` project contains such sensitive data, that giving access to CI/CD systems would pose a security risk.
@@ -148,6 +148,8 @@ Register the domain `fullstaqruby.org`. Configure it to use the Azure DNS zone.
 
 ## Step 11: Run initial Ansible
 
+The playbook deploys the API server from the latest `apiserver-*` release of the [fullstaq-ruby/infra](https://github.com/fullstaq-ruby/infra/releases) repo, so at least one such release must exist.
+
 Make sure the Azure CLI is logged in, then:
 
 ```bash
@@ -156,7 +158,21 @@ ansible-playbook -i hosts.ini -v main.yml
 cd ..
 ```
 
-## Step 12: Populate Github Actions secrets and variables
+## Step 12: Deploy the API server
+
+The Ansible run in step 11 installs `apiserver-deployer`, which downloads and activates the latest API server release from the [fullstaq-ruby/infra](https://github.com/fullstaq-ruby/infra/releases) repo. Verify on the VM that the API server is running:
+
+```bash
+sudo systemctl status apiserver-deployer apiserver
+```
+
+If it isn't, install and start the latest release manually:
+
+```bash
+sudo systemctl restart apiserver-deployer apiserver
+```
+
+## Step 13: Populate Github Actions secrets and variables
 
 In the [fullstaq-ruby/server-edition](https://github.com/fullstaq-ruby/server-edition/settings/secrets) repo, create the following environments:
 
@@ -186,6 +202,6 @@ Create these environment-specific variables:
 - `AZURE_CLIENT_ID` ('test' environment): fetch using `pushd terraform-hisec >/dev/null && terraform show -json | jq -r '.values.root_module.resources[] | select(.address == "azuread_application.server-edition-github-ci-test") | .values.application_id'; popd >/dev/null`
 - `AZURE_CLIENT_ID` ('deploy' environment): fetch using `pushd terraform-hisec >/dev/null && terraform show -json | jq -r '.values.root_module.resources[] | select(.address == "azuread_application.server-edition-github-ci-deploy") | .values.application_id'; popd >/dev/null`
 
-## Step 13: Onboard everybody
+## Step 14: Onboard everybody
 
 Onboard everybody in the [members list](members.md) according to the [onboarding instructions](onboarding.md).
