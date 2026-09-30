@@ -149,3 +149,75 @@ resource "azurerm_dns_aaaa_record" "yum" {
   records             = [var.backend_server_ipv6]
   ttl                 = 86400
 }
+
+
+resource "azurerm_dns_zone" "apt-archive" {
+  name                = "apt-archive.${var.dns_name}"
+  resource_group_name = "fullstaq-ruby-infra-maintainers"
+}
+
+resource "azurerm_role_assignment" "caddy-update-dns-apt-archive" {
+  scope                = azurerm_dns_zone.apt-archive.id
+  role_definition_name = "DNS Zone Contributor"
+  principal_id         = azuread_service_principal.caddy.object_id
+}
+
+resource "azurerm_dns_ns_record" "apt-archive" {
+  name                = "apt-archive"
+  zone_name           = azurerm_dns_zone.website.name
+  resource_group_name = azurerm_dns_zone.website.resource_group_name
+  ttl                 = 86400
+  records             = azurerm_dns_zone.apt-archive.name_servers
+}
+
+resource "azurerm_dns_a_record" "apt-archive" {
+  name                = "@"
+  zone_name           = azurerm_dns_zone.apt-archive.name
+  resource_group_name = azurerm_dns_zone.apt-archive.resource_group_name
+  records             = [var.backend_server_ipv4]
+  ttl                 = 86400
+}
+
+resource "azurerm_dns_aaaa_record" "apt-archive" {
+  name                = "@"
+  zone_name           = azurerm_dns_zone.apt-archive.name
+  resource_group_name = azurerm_dns_zone.apt-archive.resource_group_name
+  records             = [var.backend_server_ipv6]
+  ttl                 = 86400
+}
+
+
+resource "azurerm_dns_zone" "yum-archive" {
+  name                = "yum-archive.${var.dns_name}"
+  resource_group_name = "fullstaq-ruby-infra-maintainers"
+}
+
+resource "azurerm_role_assignment" "caddy-update-dns-yum-archive" {
+  scope                = azurerm_dns_zone.yum-archive.id
+  role_definition_name = "DNS Zone Contributor"
+  principal_id         = azuread_service_principal.caddy.object_id
+}
+
+resource "azurerm_dns_ns_record" "yum-archive" {
+  name                = "yum-archive"
+  zone_name           = azurerm_dns_zone.website.name
+  resource_group_name = azurerm_dns_zone.website.resource_group_name
+  ttl                 = 86400
+  records             = azurerm_dns_zone.yum-archive.name_servers
+}
+
+resource "azurerm_dns_a_record" "yum-archive" {
+  name                = "@"
+  zone_name           = azurerm_dns_zone.yum-archive.name
+  resource_group_name = azurerm_dns_zone.yum-archive.resource_group_name
+  records             = [var.backend_server_ipv4]
+  ttl                 = 86400
+}
+
+resource "azurerm_dns_aaaa_record" "yum-archive" {
+  name                = "@"
+  zone_name           = azurerm_dns_zone.yum-archive.name
+  resource_group_name = azurerm_dns_zone.yum-archive.resource_group_name
+  records             = [var.backend_server_ipv6]
+  ttl                 = 86400
+}
