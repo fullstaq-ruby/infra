@@ -1,0 +1,8 @@
+# Mitigates ssh-keysign-pwn / CVE-2026-46333.
+# Also makes it harder for malware to attach to already-running same-UID
+# shell, ssh-agent, editor, terminal, long-running session, etc., to read
+# secrets or inject behavior.
+- name: Allow admin-only ptrace
+  sysctl:
+    name: kernel.yama.ptrace_scope
+    value: 2

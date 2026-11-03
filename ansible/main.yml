@@ -6,6 +6,7 @@
     - import_tasks: tasks/essentials.yml
     - import_tasks: tasks/ssh.yml
     - import_tasks: tasks/block-ip-options-tcp-multipath-cve-2026-98432.yml
+    - import_tasks: tasks/ptrace.yml
     - import_tasks: tasks/fail2ban.yml
     - import_tasks: tasks/apparmor.yml
     - import_tasks: tasks/autoreboot.yml
