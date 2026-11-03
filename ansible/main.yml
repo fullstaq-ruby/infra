@@ -5,6 +5,7 @@
   tasks:
     - import_tasks: tasks/essentials.yml
     - import_tasks: tasks/ssh.yml
+    - import_tasks: tasks/block-ip-options-tcp-multipath-cve-2026-98432.yml
     - import_tasks: tasks/fail2ban.yml
     - import_tasks: tasks/apparmor.yml
     - import_tasks: tasks/autoreboot.yml
@@ -17,6 +18,7 @@
 
   handlers:
     - import_tasks: handlers/ssh.yml
+    - import_tasks: handlers/reboot.yml
     - import_tasks: handlers/systemd.yml
     - import_tasks: handlers/apiserver.yml
     - import_tasks: handlers/apiserver-deployer.yml

@@ -4,3 +4,9 @@
 
 - name: Create systemd-tmpfiles
   command: systemd-tmpfiles --create
+
+- name: Restart block-ip-options-cve-2026-98432.service
+  systemd:
+    name: block-ip-options-cve-2026-98432.service
+    enabled: true
+    state: restarted
