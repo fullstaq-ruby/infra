@@ -9,6 +9,8 @@ Onboarding is to be done by someone with the [Infra Owner role](roles.md).
   - If Infra Maintainer: assign roles "Editor", "Storage Admin".
   - If Infra Owner: assign roles "Owner", "Storage Admin".
 - [ ] Add to Entra ID.
-  - [ ] Create a (regular) user.
-  - [ ] Add object ID to `terraform-hisec/variables.tf` -> `infra_owners_azure_group_members` or `infra_maintainers_azure_group_members`. Apply Terraform.
+  1. [ ] Create a (regular) user.
+  2. [ ] Add object ID to `terraform-hisec/variables.tf` -> `infra_owners_azure_group_members` or `infra_maintainers_azure_group_members`.
+  3. [ ] Apply Terraform for `terraform-hisec/`.
+  4. [ ] Apply Terraform for `terraform/`.
 - [ ] Add to the [Members](members.md) document.
