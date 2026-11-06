@@ -2,6 +2,7 @@
 Description=Caddy web server
 After=network.target network-online.target
 Requires=network-online.target
+StartLimitIntervalSec=0
 
 [Service]
 Type=notify
@@ -10,6 +11,8 @@ Group=caddy
 EnvironmentFile=/etc/caddy/env
 ExecStartPre=/usr/local/bin/query-latest-repo-versions /etc/caddy/env-repo-versions
 ExecStart=/usr/local/bin/caddy run --envfile /etc/caddy/env-repo-versions --config /etc/caddy/Caddyfile
+Restart=on-failure
+RestartSec=30s
 KillSignal=SIGINT
 TimeoutStopSec=5s
 LimitNOFILE=1048576
