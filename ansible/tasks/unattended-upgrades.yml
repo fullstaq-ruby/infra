@@ -11,8 +11,10 @@
 
 - name: "unattended-upgrades: Activate"
   copy:
-    src: 20auto-upgrades
     dest: /etc/apt/apt.conf.d/20auto-upgrades
+    copy: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Unattended-Upgrade "1";
 
 - name: Install unattended-upgrades-prometheus-collector
   apt:
