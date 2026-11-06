@@ -1,17 +1,93 @@
 - name: Install autoreboot script
-  copy:
-    src: autoreboot.sh
-    dest: /usr/local/bin/autoreboot
+  template:
+    src: autoreboot.j2
+    dest: /usr/local/sbin/autoreboot
     owner: root
     group: root
     mode: 0755
 
-- name: Install autoreboot cron job
-  cron:
-    name: Autoreboot every Sunday
-    minute: '0'
-    hour: '3'
-    weekday: '0'
-    job: /usr/local/bin/autoreboot
-    user: root
-    cron_file: autoreboot
+- name: Install mandatory reboot service
+  copy:
+    dest: /etc/systemd/system/autoreboot-mandatory.service
+    owner: root
+    group: root
+    mode: 0644
+    content: |
+      [Unit]
+      Description=Mandatory scheduled reboot
+
+      [Service]
+      Type=oneshot
+      ExecStart=/usr/local/sbin/autoreboot --force
+  notify: Reload systemd
+
+- name: Install kernel check reboot service
+  copy:
+    dest: /etc/systemd/system/autoreboot-kernel-check.service
+    owner: root
+    group: root
+    mode: 0644
+    content: |
+      [Unit]
+      Description=Reboot for a kernel update
+
+      [Service]
+      Type=oneshot
+      ExecStart=/usr/local/sbin/autoreboot
+  notify: Reload systemd
+
+- name: Install mandatory reboot timer
+  copy:
+    dest: /etc/systemd/system/autoreboot-mandatory.timer
+    owner: root
+    group: root
+    mode: 0644
+    content: |
+      [Unit]
+      Description=Mandatory scheduled reboot
+
+      [Timer]
+      OnCalendar={{ autoreboot_mandatory_calendar }}
+      AccuracySec=1s
+      Persistent=false
+
+      [Install]
+      WantedBy=timers.target
+  notify:
+    - Reload systemd
+    - Restart mandatory reboot timer
+
+- name: Install kernel check reboot timer
+  copy:
+    dest: /etc/systemd/system/autoreboot-kernel-check.timer
+    owner: root
+    group: root
+    mode: 0644
+    content: |
+      [Unit]
+      Description=Kernel update reboot check
+
+      [Timer]
+      OnCalendar={{ autoreboot_kernel_check_calendar }}
+      AccuracySec=1s
+      Persistent=false
+
+      [Install]
+      WantedBy=timers.target
+  notify:
+    - Reload systemd
+    - Restart kernel check reboot timer
+
+- meta: flush_handlers
+
+- name: Enable mandatory reboot timer
+  systemd:
+    name: autoreboot-mandatory.timer
+    enabled: true
+    state: started
+
+- name: Enable kernel update reboot timer
+  systemd:
+    name: autoreboot-kernel-check.timer
+    enabled: true
+    state: started

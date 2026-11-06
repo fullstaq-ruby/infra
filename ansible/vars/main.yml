@@ -1,1 +1,3 @@
 caddy_version: '2.8.4'
+autoreboot_mandatory_calendar: 'Sun *-*-* 03:00:00'
+autoreboot_kernel_check_calendar: '*-*-* 03:05:00'

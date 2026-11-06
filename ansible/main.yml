@@ -20,6 +20,7 @@
   handlers:
     - import_tasks: handlers/ssh.yml
     - import_tasks: handlers/reboot.yml
+    - import_tasks: handlers/autoreboot.yml
     - import_tasks: handlers/systemd.yml
     - import_tasks: handlers/apiserver.yml
     - import_tasks: handlers/apiserver-deployer.yml

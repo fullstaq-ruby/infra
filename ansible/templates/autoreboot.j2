@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+if [[ ${1:-} == --force ]]; then
+	echo 'Automatically rebooting on the mandatory schedule'
+	exec /sbin/reboot
+fi
+
+if ! needrestart_output=$(needrestart -b -k); then
+	echo 'Failed to check for a pending kernel update' >&2
+	exit 1
+fi
+
+kernel_status=$(printf '%s\n' "$needrestart_output" | awk '/^NEEDRESTART-KSTA:/ { print }')
+case "$kernel_status" in
+	'NEEDRESTART-KSTA: 1')
+		echo 'No kernel update pending; skipping reboot'
+		;;
+	'NEEDRESTART-KSTA: 2'|'NEEDRESTART-KSTA: 3')
+		echo 'Kernel update pending; automatically rebooting'
+		exec /sbin/reboot
+		;;
+	*)
+		echo "Unable to determine kernel update status: $kernel_status" >&2
+		exit 1
+		;;
+esac

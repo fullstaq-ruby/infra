@@ -1,0 +1,11 @@
+- name: Restart mandatory reboot timer
+  systemd:
+    name: autoreboot-mandatory.timer
+    enabled: true
+    state: restarted
+
+- name: Restart kernel check reboot timer
+  systemd:
+    name: autoreboot-kernel-check.timer
+    enabled: true
+    state: restarted
