@@ -3,14 +3,16 @@ require 'net/http'
 require 'net/https'
 
 def main
+  apt_version = query_repo_version('apt')
+  yum_version = query_repo_version('yum')
   open_io(ARGV[0]) do |io|
-    query_repo_version('apt', io)
-    query_repo_version('yum', io)
+    io.puts "APT_LATEST_VERSION=#{apt_version}"
+    io.puts "YUM_LATEST_VERSION=#{yum_version}"
     io.puts "REPO_QUERY_TIME=#{Time.now.to_f}"
   end
 end
 
-def query_repo_version(type, output)
+def query_repo_version(type)
   uri = URI("https://storage.googleapis.com/#{require_env(:GCLOUD_BUCKET_PREFIX)}-server-edition-#{type}-repo/versions/latest_version.txt")
 
   STDERR.puts "Querying #{uri}..."
@@ -26,7 +28,7 @@ def query_repo_version(type, output)
   end
 
   STDERR.puts "#{type} latest version: #{resp.body}"
-  output.puts "#{type.upcase}_LATEST_VERSION=#{resp.body}"
+  resp.body
 end
 
 def open_io(path)
